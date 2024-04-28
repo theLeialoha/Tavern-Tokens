@@ -16,10 +16,10 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.traverse.TavernTokens"
+			"com.traverse.taverntokens.TavernTokens"
 		],
 		"client": [
-			"com.traverse.TavernTokensClient"
+			"com.traverse.taverntokens.TavernTokensClient"
 		]
 	},
 	"mixins": [

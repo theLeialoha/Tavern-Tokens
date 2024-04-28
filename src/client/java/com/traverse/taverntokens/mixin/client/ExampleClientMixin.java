@@ -1,4 +1,4 @@
-package com.traverse.mixin.client;
+package com.traverse.taverntokens.mixin.client;
 
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;
