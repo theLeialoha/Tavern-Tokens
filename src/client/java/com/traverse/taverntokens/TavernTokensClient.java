@@ -1,4 +1,4 @@
-package com.traverse;
+package com.traverse.taverntokens;
 
 import net.fabricmc.api.ClientModInitializer;
 
