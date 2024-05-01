@@ -1,0 +1,9 @@
+{
+    "replace": false,
+    "values": [
+      "taverntokens:copper_coin",
+      "taverntokens:iron_coin",
+      "taverntokens:gold_coin",
+      "taverntokens:netherrite_coin"
+    ]
+  }

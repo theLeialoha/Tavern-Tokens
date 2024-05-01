@@ -19,15 +19,11 @@
 			"com.traverse.taverntokens.TavernTokens"
 		],
 		"client": [
-			"com.traverse.taverntokens.TavernTokensClient"
+			"com.traverse.taverntokens.client.TavernTokensClient"
 		]
 	},
 	"mixins": [
-		"taverntokens.mixins.json",
-		{
-			"config": "taverntokens.client.mixins.json",
-			"environment": "client"
-		}
+		"taverntokens.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.15.10",

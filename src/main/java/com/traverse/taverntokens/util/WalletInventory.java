@@ -1,11 +1,14 @@
 package com.traverse.taverntokens.util;
 
+import java.util.Arrays;
+import java.util.HashMap;
+
+import com.traverse.taverntokens.registry.ModItems;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.Item;
-
-import java.util.HashMap;
+import net.minecraft.item.ItemStack;
 
 public class WalletInventory implements Inventory {
 
@@ -27,6 +30,8 @@ public class WalletInventory implements Inventory {
 
     @Override
     public ItemStack getStack(int slot) {
+        if (slots.length <= slot) return ItemStack.EMPTY;
+
         ItemStack original = new ItemStack(slots[slot]);
         int amount = (int) Math.min(64L, inventory.get(slots[slot]));
         original.setCount(amount);
@@ -69,6 +74,8 @@ public class WalletInventory implements Inventory {
 
     @Override
     public void setStack(int slot, ItemStack stack) {
+        if (!hasRoomFor(stack)) return; // Safety net
+
         if (!inventory.keySet().contains(stack.getItem()))
             inventory.put(stack.getItem(), (long) stack.getCount());
         else {
@@ -77,9 +84,28 @@ public class WalletInventory implements Inventory {
         }
     }
 
+    public boolean isValidItem(ItemStack stack) {
+        return (stack.isIn(ModItems.VALID_CURRENCY));
+    }
+
+    public boolean hasRoomFor(ItemStack stack) {
+        boolean hasRoom = Arrays.asList(stack.getItem()).contains(stack.getItem())
+                || inventory.size() != size();
+
+        return isValidItem(stack) && hasRoom;
+    }
+
+    public Item[] getInventory() {
+        return this.inventory.keySet().toArray(Item[]::new);
+    }
+
+    public int getMaxItemCount() {
+        return Integer.MAX_VALUE;
+    }
+
     @Override
     public int size() {
-        return Math.max(inventory.size() + 1, 4*6);
+        return Math.min(inventory.size() + 1, 4*6);
     }
 
     @Override

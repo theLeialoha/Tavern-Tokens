@@ -1,18 +1,33 @@
 package com.traverse.taverntokens;
 
+import com.traverse.taverntokens.registry.ModItems;
+import com.traverse.taverntokens.screens.WalletScreenHandler;
+
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.resource.featuretoggle.FeatureFlags;
+import net.minecraft.screen.ScreenHandlerType;
+import net.minecraft.util.Identifier;
 
 public class TavernTokens implements ModInitializer {
-	// This logger is used to write text to the console and the log file.
-	// It is considered best practice to use your mod id as the logger's name.
-	// That way, it's clear which mod wrote info, warnings, and errors.
-   
+
+	// public static final ScreenHandlerType<WalletScreenHandler> WALLET_SCREEN_HANDLER_2 = Registry.register(
+	// 	Registries.SCREEN_HANDLER, new Identifier(References.MODID, "wallet_screen"),
+	// 		new ScreenHandlerType<>(WalletScreenHandler::new, FeatureFlags.VANILLA_FEATURES)
+	// 	// new ExtendedScreenHandlerType<>(
+	// 	// 	(syncId, inventory, buf) -> new WalletScreenHandler(syncId, inventory.player))
+	// );
+
+	public static ScreenHandlerType<WalletScreenHandler> WALLET_SCREEN_HANDLER;
+
 	@Override
 	public void onInitialize() {
-		// This code runs as soon as Minecraft is in a mod-load-ready state.
-		// However, some things (like resources) may still be uninitialized.
-		// Proceed with mild caution.
+		References.LOGGER.info("Insert Coins to Continue");
+		ModItems.registerItems();
 
-		Reference.LOGGER.info("Insert Coins to Continue");
+		WALLET_SCREEN_HANDLER = ScreenHandlerRegistry.registerSimple(new Identifier(References.MODID, "wallet_screen"),
+				((syncId, inventory) -> new WalletScreenHandler(syncId, inventory)));
 	}
 }
