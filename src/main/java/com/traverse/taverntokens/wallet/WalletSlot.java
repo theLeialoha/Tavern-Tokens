@@ -1,6 +1,4 @@
-package com.traverse.taverntokens.screens;
-
-import com.traverse.taverntokens.util.WalletInventory;
+package com.traverse.taverntokens.wallet;
 
 import net.minecraft.screen.slot.Slot;
 

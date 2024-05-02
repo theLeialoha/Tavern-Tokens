@@ -5,7 +5,7 @@ import org.joml.Quaternionf;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.traverse.taverntokens.References;
-import com.traverse.taverntokens.screens.WalletScreenHandler;
+import com.traverse.taverntokens.wallet.WalletScreenHandler;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;

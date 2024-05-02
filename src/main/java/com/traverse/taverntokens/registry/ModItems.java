@@ -23,7 +23,7 @@ public class ModItems {
     public static Item NETHERITE_COIN = new Item(new FabricItemSettings());
     public static Item DEBUG_ITEM = new DebugItem(new FabricItemSettings());
     public static  ItemGroup TAB = Registry.register(Registries.ITEM_GROUP, new Identifier(References.MODID,"taverntokens_item_group"),
-    FabricItemGroup.builder().displayName(Text.translatable("taverntokens_item_group"))
+    FabricItemGroup.builder().displayName(Text.translatable("itemGroup." + References.MODID))
             .icon(() -> new ItemStack(Items.BUNDLE))
             .entries((displayContext, entries) -> {
                 entries.add(COPPER_COIN);

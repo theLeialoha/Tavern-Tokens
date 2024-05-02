@@ -2,7 +2,7 @@ package com.traverse.taverntokens.mixin;
 
 import com.traverse.taverntokens.References;
 import com.traverse.taverntokens.interfaces.PlayerEntityWithBagInventory;
-import com.traverse.taverntokens.util.WalletInventory;
+import com.traverse.taverntokens.wallet.WalletInventory;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;

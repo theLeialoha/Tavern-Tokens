@@ -1,6 +1,6 @@
 package com.traverse.taverntokens.interfaces;
 
-import com.traverse.taverntokens.util.WalletInventory;
+import com.traverse.taverntokens.wallet.WalletInventory;
 
 public interface PlayerEntityWithBagInventory {
 

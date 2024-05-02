@@ -1,25 +1,18 @@
-package com.traverse.taverntokens.screens;
+package com.traverse.taverntokens.wallet;
 
 import com.traverse.taverntokens.TavernTokens;
 import com.traverse.taverntokens.interfaces.PlayerEntityWithBagInventory;
-import com.traverse.taverntokens.util.WalletInventory;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerFactory;
-// import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
 
 public class WalletScreenHandler extends ScreenHandler {
 
     public WalletInventory walletInventory;
     public PlayerInventory playerInventory;
-
-    // public WalletScreenHandler(int syncId, PlayerInventory inventory) {
-    //     this(syncId, inventory, ScreenHandlerContext.EMPTY);
-    // }
 
     public WalletScreenHandler(int syncId, PlayerInventory inventory) {
         super(TavernTokens.WALLET_SCREEN_HANDLER, syncId);
