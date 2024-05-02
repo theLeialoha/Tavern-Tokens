@@ -1,0 +1,10 @@
+{
+    "item.taverntokens.copper_coin": "Copper Coin",
+    "item.taverntokens.iron_coin": "Iron Coin",
+    "item.taverntokens.gold_coin": "Gold Coin",
+    "item.taverntokens.netherite_coin": "Netherite Coin",
+    "screen.taverntokens.wallet": "Wallet",
+    "key.taverntokens.wallet": "Open Wallet",
+    "key.category.taverntokens": "Tavern Tokens",
+    "itemGroup.taverntokens": "Tavern Tokens"
+}

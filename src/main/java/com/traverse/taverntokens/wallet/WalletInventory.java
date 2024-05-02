@@ -1,4 +1,4 @@
-package com.traverse.taverntokens.util;
+package com.traverse.taverntokens.wallet;
 
 import java.util.Arrays;
 import java.util.HashMap;
