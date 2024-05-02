@@ -26,12 +26,14 @@ public class PlayerEntityMixin implements PlayerEntityWithBagInventory {
 
     @Inject(at = @At("TAIL"), method = "writeCustomDataToNbt")
     public void writeDataCustomNBT(NbtCompound nbt, CallbackInfo ci) {
-        References.LOGGER.info("Coins deposited to the Bank");
+        nbt.put("WalletItems", this.walletInventory.toNbtList());
     }
 
     @Inject(at = @At("TAIL"), method = "readCustomDataFromNbt")
     public void readDataCustomNBT(NbtCompound nbt, CallbackInfo ci) {
-        References.LOGGER.info("Coins withdrawn from the Bank");
+        if (nbt.contains("WalletItems", 9)) {
+            this.walletInventory.readNbtList(nbt.getList("WalletItems", 10));
+        }
     }
 
     // Drop Method for Coins on Death

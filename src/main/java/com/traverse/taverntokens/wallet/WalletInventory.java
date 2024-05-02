@@ -9,17 +9,15 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
 
 public class WalletInventory implements Inventory {
 
     protected HashMap<Item, Long> inventory = new HashMap<>();
     protected Item[] slots = inventory.keySet().toArray(Item[]::new);
-
-    public static WalletInventory createWalletInventory(PlayerEntity player) {
-        // player.getNBTObject('coins')
-        // TODO: Create the initializer
-        return null;
-    }
 
     // save()
 
@@ -111,6 +109,34 @@ public class WalletInventory implements Inventory {
     @Override
     public void clear() {
         inventory.clear();
+    }
+
+    public void readNbtList(NbtList nbtList) {
+        for (int i = 0; i < nbtList.size(); ++i) {
+            NbtCompound nbtCompound = nbtList.getCompound(i);
+            Identifier identifier = Identifier.tryParse(nbtCompound.getString("id"));
+            if (identifier == null) continue;
+
+            Item item = Registries.ITEM.get(identifier);
+            Long count = nbtCompound.getLong("Count");
+            inventory.put(item, count);
+        }
+    }
+
+    public NbtList toNbtList() {
+        NbtList nbtList = new NbtList();
+
+        for (Item item : inventory.keySet()) {
+            Identifier identifier = Registries.ITEM.getId(item);
+            if (identifier == null) continue;
+
+            NbtCompound nbtCompound = new NbtCompound();
+            nbtCompound.putString("id", identifier.toString());
+            nbtCompound.putLong("Count", inventory.get(item));
+            nbtList.add(nbtCompound);
+        }
+
+        return nbtList;
     }
 
 }
