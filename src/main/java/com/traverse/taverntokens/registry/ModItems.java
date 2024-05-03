@@ -21,7 +21,6 @@ public class ModItems {
     public static Item IRON_COIN = new Item(new FabricItemSettings());
     public static Item GOLD_COIN = new Item(new FabricItemSettings());
     public static Item NETHERITE_COIN = new Item(new FabricItemSettings());
-    public static Item DEBUG_ITEM = new DebugItem(new FabricItemSettings());
     public static  ItemGroup TAB = Registry.register(Registries.ITEM_GROUP, new Identifier(References.MODID,"taverntokens_item_group"),
     FabricItemGroup.builder().displayName(Text.translatable("itemGroup." + References.MODID))
             .icon(() -> new ItemStack(Items.BUNDLE))
@@ -30,7 +29,6 @@ public class ModItems {
                 entries.add(IRON_COIN);
                 entries.add(GOLD_COIN);
                 entries.add(NETHERITE_COIN);
-                entries.add(DEBUG_ITEM);
             })
             .build());
 
@@ -41,6 +39,5 @@ public class ModItems {
         Registry.register(Registries.ITEM, new Identifier(References.MODID, "iron_coin"), IRON_COIN);
         Registry.register(Registries.ITEM, new Identifier(References.MODID, "gold_coin"), GOLD_COIN);
         Registry.register(Registries.ITEM, new Identifier(References.MODID, "netherite_coin"), NETHERITE_COIN);
-        Registry.register(Registries.ITEM, new Identifier(References.MODID, "debug_item"), DEBUG_ITEM);
     }
 }
