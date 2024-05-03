@@ -1,6 +1,5 @@
 package com.traverse.taverntokens.wallet;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
 import com.traverse.taverntokens.registry.ModItems;
@@ -16,10 +15,8 @@ import net.minecraft.util.Identifier;
 
 public class WalletInventory implements Inventory {
 
-    protected HashMap<Item, Long> inventory = new HashMap<>();
-    protected Item[] slots = inventory.keySet().toArray(Item[]::new);
-
-    // save()
+    private HashMap<Item, Long> inventory = new HashMap<>();
+    private double cooldown = 0;
 
     @Override
     public boolean canPlayerUse(PlayerEntity player) {
@@ -28,12 +25,19 @@ public class WalletInventory implements Inventory {
 
     @Override
     public ItemStack getStack(int slot) {
-        if (slots.length <= slot) return ItemStack.EMPTY;
-
-        ItemStack original = new ItemStack(slots[slot]);
-        int amount = (int) Math.min(64L, inventory.get(slots[slot]));
+        slot -= 9 * 4; // Default player inventory
+        if (inventory.size() <= slot) return ItemStack.EMPTY;
+        
+        Item item = inventory.keySet().toArray(Item[]::new)[slot];
+        ItemStack original = new ItemStack(item);
+        int amount = (int) Math.min(64L, inventory.get(item));
         original.setCount(amount);
         return original;
+    }
+
+    @Override
+    public int count(Item item) {
+        return (int) Math.min(64, inventory.get(item));
     }
 
     @Override
@@ -44,34 +48,39 @@ public class WalletInventory implements Inventory {
     @Override
     public void markDirty() {
         // Remove any empty coins
-        inventory.entrySet().stream().filter(e -> e.getValue() == 0L)
-            .forEach(e -> inventory.remove(e.getKey()));
+        @SuppressWarnings("unchecked")
+        HashMap<Item, Long> tempInventory = (HashMap<Item, Long>) inventory.clone();
 
-        // Update slots
-        slots = inventory.keySet().toArray(Item[]::new);
+        tempInventory.entrySet().stream().filter(e -> e.getValue() == 0L)
+            .forEach(e -> inventory.remove(e.getKey()));
     }
 
     @Override
     public ItemStack removeStack(int slot) {
-        ItemStack original = new ItemStack(slots[slot]);
-        Long amountInBag = inventory.get(slots[slot]);
+        slot -= 9 * 4; // Default player inventory
+        Item item = inventory.keySet().toArray(Item[]::new)[slot];
+        ItemStack original = new ItemStack(item);
+        Long amountInBag = inventory.get(item);
         int amountToTake = (int) Math.min(64L, amountInBag);
-        inventory.put(slots[slot], amountInBag - amountToTake);
+        inventory.put(item, amountInBag - amountToTake);
         original.setCount(amountToTake);
         return original;
     }
 
     @Override
     public ItemStack removeStack(int slot, int amount) {
-        ItemStack original = new ItemStack(slots[slot]);
-        Long amountInBag = inventory.get(slots[slot]);
-        inventory.put(slots[slot], amountInBag - amount);
+        slot -= 9 * 4; // Default player inventory
+        Item item = inventory.keySet().toArray(Item[]::new)[slot];
+        ItemStack original = new ItemStack(item);
+        Long amountInBag = inventory.get(item);
+        inventory.put(item, amountInBag - amount);
         original.setCount(amount);
         return original;
     }
 
     @Override
     public void setStack(int slot, ItemStack stack) {
+        slot -= 9 * 4; // Default player inventory
         if (!hasRoomFor(stack)) return; // Safety net
 
         if (!inventory.keySet().contains(stack.getItem()))
@@ -87,7 +96,7 @@ public class WalletInventory implements Inventory {
     }
 
     public boolean hasRoomFor(ItemStack stack) {
-        boolean hasRoom = Arrays.asList(stack.getItem()).contains(stack.getItem())
+        boolean hasRoom = inventory.keySet().contains(stack.getItem())
                 || inventory.size() != size();
 
         return isValidItem(stack) && hasRoom;
@@ -99,6 +108,11 @@ public class WalletInventory implements Inventory {
 
     public int getMaxItemCount() {
         return Integer.MAX_VALUE;
+    }
+
+    public boolean canBeHighlighted(int slot) {
+        slot -= 9 * 4; // Default player inventory
+        return size() > slot;
     }
 
     @Override
@@ -137,6 +151,14 @@ public class WalletInventory implements Inventory {
         }
 
         return nbtList;
+    }
+
+    public boolean isOnDropCooldown() {
+        return cooldown > System.currentTimeMillis() / 1000;
+    }
+
+    public void setDropCooldown() {
+        cooldown = System.currentTimeMillis() / 1000 + 0.25;
     }
 
 }

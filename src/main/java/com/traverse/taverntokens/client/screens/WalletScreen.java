@@ -38,8 +38,8 @@ public class WalletScreen extends HandledScreen<WalletScreenHandler>{
 
         // Adds Slots Dynamically
         for (int slot = 0; slot < slots; slot++) {
-            int _x = 61 + 18 * (Math.floorDiv(slot, 6));
-            int _y = 7 + 18 * (slot % 6);
+            int _x = 61 + 18 * (slot % 6);
+            int _y = 7 + 18 * (Math.floorDiv(slot, 6));
             context.drawTexture(WALLET_GUI, x + _x, y + _y, 176, 0, 18, 18);
         }
 
