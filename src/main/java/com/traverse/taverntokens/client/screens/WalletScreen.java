@@ -44,7 +44,7 @@ public class WalletScreen extends HandledScreen<WalletScreenHandler>{
         }
 
         // Renders Player Model
-        drawEntity(context, x + 31, y + 70, 30, (float)(x + 51) - mouseX, (float)(y + 75 - 50) - mouseY, this.client.player);
+        drawEntity(context, x + 31, y + 70, 30, (float)(x + 31) - mouseX, (float)(y + 70 - 50) - mouseY, this.client.player);
     }
 
     @Override
