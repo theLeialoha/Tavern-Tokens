@@ -1,5 +1,6 @@
 package com.traverse.taverntokens.wallet;
 
+import com.traverse.taverntokens.References;
 import com.traverse.taverntokens.TavernTokens;
 import com.traverse.taverntokens.interfaces.PlayerEntityWithBagInventory;
 
@@ -7,7 +8,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.screen.slot.SlotActionType;
 
 public class WalletScreenHandler extends ScreenHandler {
 
@@ -31,17 +34,37 @@ public class WalletScreenHandler extends ScreenHandler {
         }
 
         // Wallet Inventory Slots
+        int slotOffset = this.slots.size();
         for (int row = 0; row < 4; row++) {
             for (int col = 0; col < 6; col++) {
                 int x = 62 + col * 18;
                 int y = 8 + row * 18;
-                int slots = (this.slots.size() - 1);
 
-                addSlot(new WalletSlot(walletInventory, slots + col + row * 9, x, y));
+                addSlot(new WalletSlot(walletInventory, slotOffset + col + row * 9, x, y));
             }
         }
     }
 
+    @Override
+    public void onSlotClick(int slot, int button, SlotActionType actionType, PlayerEntity player) {
+        try {
+            Slot slots = this.slots.get(slot);
+            boolean isPlayerInventory = slots.inventory == playerInventory;
+            if (!isPlayerInventory && actionType == SlotActionType.SWAP) {
+                // TODO: Allow numpad swapping
+            } else if (!isPlayerInventory && actionType == SlotActionType.THROW) {
+                if (!this.walletInventory.isOnDropCooldown()) {
+                    this.walletInventory.setDropCooldown();
+                    super.onSlotClick(slot, button, actionType, player);
+                }
+            } else super.onSlotClick(slot, button, actionType, player);
+
+            References.LOGGER.info(actionType.toString());
+        } catch (IndexOutOfBoundsException e) {
+            // Clicking on a gui but not in a slot results in an index of -999
+            super.onSlotClick(slot, button, actionType, player);
+        }
+    }
 
     @Override
     public boolean canUse(PlayerEntity player) {
@@ -50,22 +73,7 @@ public class WalletScreenHandler extends ScreenHandler {
 
     @Override
     public ItemStack quickMove(PlayerEntity player, int slot) {
-        ItemStack stack = ItemStack.EMPTY;
-        final Slot slots  = this.slots.get(slot);
-
-        boolean isPlayerInventory = slots.inventory == playerInventory;
-        if (isPlayerInventory) {
-            stack = slots.getStack();
-
-            if (walletInventory.hasRoomFor(stack)) {
-                walletInventory.setStack(0, stack);
-                stack = ItemStack.EMPTY;
-            }
-        } else {
-            stack = walletInventory.removeStack(slot);
-        }
-
-        return stack;
+        return ItemStack.EMPTY;
     }
 
 }
