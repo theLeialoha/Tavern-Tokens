@@ -6,6 +6,7 @@ import com.traverse.taverntokens.References;
 import com.traverse.taverntokens.TavernTokens;
 import com.traverse.taverntokens.client.screens.WalletScreen;
 import com.traverse.taverntokens.client.screens.WalletScreenHandlerFactory;
+import com.traverse.taverntokens.networking.PacketHandler;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -31,13 +32,8 @@ public class TavernTokensClient implements ClientModInitializer {
 		));
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			while (keyBinding.wasPressed()) {
-				
-				// client.player.sendMessage(Text.literal("Key 1 was pressed!"), false);
-				References.LOGGER.info(client.player.getEntityName() + ", Button pressed");
-				client.player.openHandledScreen(new WalletScreenHandlerFactory());
-		
-			}
+			while (keyBinding.wasPressed())
+				PacketHandler.requestWallet();
 		}); 
 	} 
 }
