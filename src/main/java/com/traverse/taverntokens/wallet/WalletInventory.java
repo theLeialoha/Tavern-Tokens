@@ -10,6 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
@@ -30,6 +31,17 @@ public class WalletInventory implements Inventory {
         
         Item item = inventory.keySet().toArray(Item[]::new)[slot];
         ItemStack original = new ItemStack(item);
+        Long count = inventory.get(item);
+
+        NbtList lore = new NbtList();
+        NbtCompound display = new NbtCompound();
+        NbtCompound compound = new NbtCompound();
+        
+        lore.add(NbtString.of("{\"text\":\"Total: " + count + "\", \"color\":\"#f5d69d\",\"italic\":false}"));
+        display.put("Lore", lore);
+        compound.put("display", display);
+        original.setNbt(compound);
+
         original.setCount(1);
         return original;
     }
@@ -77,6 +89,14 @@ public class WalletInventory implements Inventory {
         else inventory.remove(item);
         original.setCount(amount);
         return original;
+    }
+
+    public int getStackSize(int slot) {
+        slot -= 9 * 4; // Default player inventory
+        Item item = inventory.keySet().toArray(Item[]::new)[slot];
+        Long amountInBag = inventory.get(item);
+        int amountToTake = (int) Math.min(amountInBag, 64);
+        return amountToTake;
     }
 
     @Override

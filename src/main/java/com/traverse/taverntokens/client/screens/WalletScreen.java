@@ -19,7 +19,7 @@ import net.minecraft.util.Identifier;
 
 public class WalletScreen extends HandledScreen<WalletScreenHandler>{
 
-    private final Identifier WALLET_GUI = new Identifier(References.MODID, "gui/wallet.png");
+    private final Identifier WALLET_GUI = new Identifier(References.MODID, "textures/gui/wallet_inventory.png");
 
     public WalletScreen(WalletScreenHandler handler, PlayerInventory inventory, Text title) {
         super(handler, inventory, title);
