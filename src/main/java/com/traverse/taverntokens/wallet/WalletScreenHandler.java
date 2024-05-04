@@ -1,9 +1,12 @@
 package com.traverse.taverntokens.wallet;
 
+import java.sql.Ref;
+
 import com.traverse.taverntokens.References;
 import com.traverse.taverntokens.TavernTokens;
 import com.traverse.taverntokens.interfaces.PlayerEntityWithBagInventory;
 
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -47,60 +50,61 @@ public class WalletScreenHandler extends ScreenHandler {
     @Override
     public void onSlotClick(int slot, int button, SlotActionType actionType, PlayerEntity player) {
         try {
-
-            // Thank you MCreator (best inside joke out there)
-            if (actionType == SlotActionType.CLONE && onClone(slot, button, player))
-                super.onSlotClick(slot, button, actionType, player);
-            if (actionType == SlotActionType.PICKUP && onPickup(slot, button, player))
-                super.onSlotClick(slot, button, actionType, player);
-            if (actionType == SlotActionType.PICKUP_ALL && onPickupAll(slot, button, player))
-                super.onSlotClick(slot, button, actionType, player);
-            if (actionType == SlotActionType.QUICK_CRAFT && onQuickCraft(slot, button, player))
-                super.onSlotClick(slot, button, actionType, player);
-            if (actionType == SlotActionType.QUICK_MOVE && onQuickMove(slot, button, player))
-                super.onSlotClick(slot, button, actionType, player);
-            if (actionType == SlotActionType.SWAP && onSwap(slot, button, player))
-                super.onSlotClick(slot, button, actionType, player);
-            if (actionType == SlotActionType.THROW && onThrow(slot, button, player))
-                super.onSlotClick(slot, button, actionType, player);
+            // Fuck MCreator ---- MUFFIN TIME
+            switch (actionType) {
+                case CLONE -> onClone(slot, button, player);
+                case PICKUP -> onPickup(slot, button, player);
+                case PICKUP_ALL -> onPickupAll(slot, button, player);
+                case QUICK_CRAFT -> onQuickCraft(slot, button, player);
+                case QUICK_MOVE -> onQuickMove(slot, button, player);
+                case SWAP -> onSwap(slot, button, player);
+                case THROW -> onThrow(slot, button, player);
+            }
         } catch (IndexOutOfBoundsException e) { }
     }
-
-    public boolean onClone(int slot, int button, PlayerEntity player) {
+    
+    public void onClone(int slot, int button, PlayerEntity player) {
         Slot slots = this.slots.get(slot);
         boolean isPlayerInventory = slots.inventory == playerInventory;
-        return isPlayerInventory;
     }
 
-    public boolean onPickup(int slot, int button, PlayerEntity player) {
+    public void onPickup(int slot, int button, PlayerEntity player) {
         Slot slots = this.slots.get(slot);
         boolean isPlayerInventory = slots.inventory == playerInventory;
         if (!isPlayerInventory) {
             if (this.walletInventory.isValidItem(getCursorStack()) || getCursorStack().isEmpty()) {
-                if (getCursorStack().isEmpty()) setCursorStack(this.walletInventory.removeStack(slot));
-                else {
-                    this.walletInventory.setStack(0, getCursorStack());
-                    setCursorStack(ItemStack.EMPTY);
+                if (getCursorStack().isEmpty()) {
+                    int stackSize = this.walletInventory.getStackSize(slot);
+                    int scale = button + 1;
+                    setCursorStack(this.walletInventory.removeStack(slot, stackSize / scale));
+                } else {
+                    ItemStack itemToInsert = getCursorStack();
+                    int amount = itemToInsert.getCount();
+                    itemToInsert.setCount(button == 0 ? amount : 1);
+
+                    this.walletInventory.setStack(0, itemToInsert);
+                    itemToInsert.setCount(amount - itemToInsert.getCount());
+                    setCursorStack(itemToInsert);
                 }
             }
-        }
-
-        return isPlayerInventory;
+        } else super.onSlotClick(slot, button, SlotActionType.PICKUP, player);
     }
 
-    public boolean onPickupAll(int slot, int button, PlayerEntity player) {
+    public void onPickupAll(int slot, int button, PlayerEntity player) {
         Slot slots = this.slots.get(slot);
         boolean isPlayerInventory = slots.inventory == playerInventory;
-        return isPlayerInventory;
+
+        // TODO: Force a limt
     }
 
-    public boolean onQuickCraft(int slot, int button, PlayerEntity player) {
+    public void onQuickCraft(int slot, int button, PlayerEntity player) {
         Slot slots = this.slots.get(slot);
         boolean isPlayerInventory = slots.inventory == playerInventory;
-        return isPlayerInventory;
+
+        References.LOGGER.info("CLICK DRAG");
     }
 
-    public boolean onQuickMove(int slot, int button, PlayerEntity player) {
+    public void onQuickMove(int slot, int button, PlayerEntity player) {
         Slot slots = this.slots.get(slot);
         boolean isPlayerInventory = slots.inventory == playerInventory;
         if (!isPlayerInventory) {
@@ -132,30 +136,20 @@ public class WalletScreenHandler extends ScreenHandler {
                 }
             }
         }
-        return false;
     }
 
-    public boolean onSwap(int slot, int button, PlayerEntity player) {
+    public void onSwap(int slot, int button, PlayerEntity player) {
         Slot slots = this.slots.get(slot);
         boolean isPlayerInventory = slots.inventory == playerInventory;
-        return isPlayerInventory;
     }
 
-    public boolean onThrow(int slot, int button, PlayerEntity player) {
+    public void onThrow(int slot, int button, PlayerEntity player) {
         Slot slots = this.slots.get(slot);
         boolean isPlayerInventory = slots.inventory == playerInventory;
         if (!this.walletInventory.isOnDropCooldown()) {
             this.walletInventory.setDropCooldown();
         }
-        return isPlayerInventory || this.walletInventory.isOnDropCooldown();
     }
-
-
-
-
-
-
-
 
 
     @Override
