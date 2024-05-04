@@ -31,7 +31,7 @@ public class WalletInventory implements Inventory {
         
         Item item = inventory.keySet().toArray(Item[]::new)[slot];
         ItemStack original = new ItemStack(item);
-        Long count = inventory.get(item);
+        Long count = inventory.get(item) - 1;
 
         NbtList lore = new NbtList();
         NbtCompound display = new NbtCompound();
