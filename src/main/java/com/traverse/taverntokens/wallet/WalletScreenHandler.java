@@ -1,28 +1,30 @@
 package com.traverse.taverntokens.wallet;
 
-import java.sql.Ref;
-
 import com.traverse.taverntokens.References;
 import com.traverse.taverntokens.TavernTokens;
 import com.traverse.taverntokens.interfaces.PlayerEntityWithBagInventory;
+import com.traverse.taverntokens.networking.PacketHandler;
 
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.server.network.ServerPlayerEntity;
 
 public class WalletScreenHandler extends ScreenHandler {
 
     public WalletInventory walletInventory;
     public PlayerInventory playerInventory;
 
+    private final PlayerEntity player;
+
     public WalletScreenHandler(int syncId, PlayerInventory inventory) {
         super(TavernTokens.WALLET_SCREEN_HANDLER, syncId);
+        this.player = inventory.player;
 
-        this.walletInventory = ((PlayerEntityWithBagInventory) inventory.player).getWalletInventory();
+        this.walletInventory = ((PlayerEntityWithBagInventory) player).getWalletInventory();
         this.playerInventory = inventory;
 
         // Player Inventory Slots
@@ -45,10 +47,23 @@ public class WalletScreenHandler extends ScreenHandler {
                 addSlot(new WalletSlot(walletInventory, slotOffset + col + row * 9, x, y));
             }
         }
+
+        enableSyncing();
+        updateToClient();
+    }
+
+    @Override
+    public void updateToClient() {
+        super.updateToClient();
+        if (this.player instanceof ServerPlayerEntity serverPlayer) {
+            PacketHandler.updateWallet(serverPlayer, walletInventory);
+        }
     }
 
     @Override
     public void onSlotClick(int slot, int button, SlotActionType actionType, PlayerEntity player) {
+        if (!(player instanceof ServerPlayerEntity)) return;
+
         try {
             // Fuck MCreator ---- MUFFIN TIME
             switch (actionType) {
@@ -61,6 +76,9 @@ public class WalletScreenHandler extends ScreenHandler {
                 case THROW -> onThrow(slot, button, player);
             }
         } catch (IndexOutOfBoundsException e) { }
+
+        if (actionType != SlotActionType.THROW)
+            updateToClient();
     }
     
     public void onClone(int slot, int button, PlayerEntity player) {
@@ -98,10 +116,7 @@ public class WalletScreenHandler extends ScreenHandler {
     }
 
     public void onQuickCraft(int slot, int button, PlayerEntity player) {
-        Slot slots = this.slots.get(slot);
-        boolean isPlayerInventory = slots.inventory == playerInventory;
-
-        References.LOGGER.info("CLICK DRAG");
+        // Automatically ignored
     }
 
     public void onQuickMove(int slot, int button, PlayerEntity player) {
