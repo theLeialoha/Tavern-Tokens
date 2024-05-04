@@ -36,9 +36,9 @@ public class PlayerEntityMixin implements PlayerEntityWithBagInventory {
         }
     }
 
-    // Drop Method for Coins on Death
-    @Inject(at = @At("RETURN"), method = "dropInventory")
-    public void droppedInventory(CallbackInfo ci) {
-        References.LOGGER.info("Coins lost send HALP");
-    }
+    // // Drop Method for Coins on Death
+     @Inject(at = @At("RETURN"), method = "dropInventory")
+     public void droppedInventory(CallbackInfo ci) {
+         References.LOGGER.info("Coins lost send HALP");
+     }
 }

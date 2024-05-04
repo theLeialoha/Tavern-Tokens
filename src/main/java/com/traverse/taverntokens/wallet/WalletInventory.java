@@ -30,8 +30,7 @@ public class WalletInventory implements Inventory {
         
         Item item = inventory.keySet().toArray(Item[]::new)[slot];
         ItemStack original = new ItemStack(item);
-        int amount = (int) Math.min(64L, inventory.get(item));
-        original.setCount(amount);
+        original.setCount(1);
         return original;
     }
 
@@ -61,8 +60,9 @@ public class WalletInventory implements Inventory {
         Item item = inventory.keySet().toArray(Item[]::new)[slot];
         ItemStack original = new ItemStack(item);
         Long amountInBag = inventory.get(item);
-        int amountToTake = (int) Math.min(64L, amountInBag);
-        inventory.put(item, amountInBag - amountToTake);
+        int amountToTake = (int) Math.min(amountInBag, 64);
+        if (amountInBag - amountToTake != 0) inventory.put(item, amountInBag - amountToTake);
+        else inventory.remove(item);
         original.setCount(amountToTake);
         return original;
     }
@@ -73,7 +73,8 @@ public class WalletInventory implements Inventory {
         Item item = inventory.keySet().toArray(Item[]::new)[slot];
         ItemStack original = new ItemStack(item);
         Long amountInBag = inventory.get(item);
-        inventory.put(item, amountInBag - amount);
+        if (amountInBag - amount != 0) inventory.put(item, amountInBag - amount);
+        else inventory.remove(item);
         original.setCount(amount);
         return original;
     }
@@ -159,6 +160,10 @@ public class WalletInventory implements Inventory {
 
     public void setDropCooldown() {
         cooldown = System.currentTimeMillis() / 1000 + 0.25;
+    }
+
+    public void copy(WalletInventory walletInventory) {
+        inventory.putAll(walletInventory.inventory);
     }
 
 }
