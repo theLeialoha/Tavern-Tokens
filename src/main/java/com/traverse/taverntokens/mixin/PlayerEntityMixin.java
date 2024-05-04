@@ -14,7 +14,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 
 @Mixin(PlayerEntity.class)
-public class PlayerEntityMixin implements PlayerEntityWithBagInventory {
+public abstract class PlayerEntityMixin implements PlayerEntityWithBagInventory {
 
     @Unique
     public WalletInventory walletInventory = new WalletInventory();
