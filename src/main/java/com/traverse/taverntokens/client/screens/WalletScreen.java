@@ -78,6 +78,7 @@ public class WalletScreen extends HandledScreen<WalletScreenHandler>{
         entity.headYaw = l;
     }
 
+    @SuppressWarnings("deprecation")
     public static void drawEntity(DrawContext context, int x, int y, int size, Quaternionf quaternionf, Quaternionf quaternionf2, LivingEntity entity) {
         context.getMatrices().push();
         context.getMatrices().translate((double)x, (double)y, 50.0);

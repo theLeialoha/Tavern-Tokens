@@ -7,5 +7,4 @@ public class References {
 
     public static final String MODID = "taverntokens";
     public static final Logger LOGGER = LoggerFactory.getLogger(MODID);
-
 }

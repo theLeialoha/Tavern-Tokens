@@ -38,7 +38,6 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
     modApi("com.terraformersmc:modmenu:${project.modmenu_version}")
-    // modImplementation "dev.emi:trinkets:${project.trinkets_version}"
 }
 
 processResources {

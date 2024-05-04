@@ -5,7 +5,6 @@ import org.lwjgl.glfw.GLFW;
 import com.traverse.taverntokens.References;
 import com.traverse.taverntokens.TavernTokens;
 import com.traverse.taverntokens.client.screens.WalletScreen;
-import com.traverse.taverntokens.client.screens.WalletScreenHandlerFactory;
 import com.traverse.taverntokens.networking.PacketHandler;
 
 import net.fabricmc.api.ClientModInitializer;

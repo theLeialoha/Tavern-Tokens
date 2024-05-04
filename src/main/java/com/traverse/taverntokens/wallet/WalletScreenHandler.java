@@ -8,7 +8,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerListener;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 
@@ -48,23 +47,116 @@ public class WalletScreenHandler extends ScreenHandler {
     @Override
     public void onSlotClick(int slot, int button, SlotActionType actionType, PlayerEntity player) {
         try {
-            Slot slots = this.slots.get(slot);
-            boolean isPlayerInventory = slots.inventory == playerInventory;
-            if (!isPlayerInventory && actionType == SlotActionType.SWAP) {
-                // TODO: Allow numpad swapping
-            } else if (!isPlayerInventory && actionType == SlotActionType.THROW) {
-                if (!this.walletInventory.isOnDropCooldown()) {
-                    this.walletInventory.setDropCooldown();
-                    super.onSlotClick(slot, button, actionType, player);
-                }
-            } else super.onSlotClick(slot, button, actionType, player);
 
-            References.LOGGER.info(actionType.toString());
-        } catch (IndexOutOfBoundsException e) {
-            // Clicking on a gui but not in a slot results in an index of -999
-            super.onSlotClick(slot, button, actionType, player);
-        }
+            // Thank you MCreator (best inside joke out there)
+            if (actionType == SlotActionType.CLONE && onClone(slot, button, player))
+                super.onSlotClick(slot, button, actionType, player);
+            if (actionType == SlotActionType.PICKUP && onPickup(slot, button, player))
+                super.onSlotClick(slot, button, actionType, player);
+            if (actionType == SlotActionType.PICKUP_ALL && onPickupAll(slot, button, player))
+                super.onSlotClick(slot, button, actionType, player);
+            if (actionType == SlotActionType.QUICK_CRAFT && onQuickCraft(slot, button, player))
+                super.onSlotClick(slot, button, actionType, player);
+            if (actionType == SlotActionType.QUICK_MOVE && onQuickMove(slot, button, player))
+                super.onSlotClick(slot, button, actionType, player);
+            if (actionType == SlotActionType.SWAP && onSwap(slot, button, player))
+                super.onSlotClick(slot, button, actionType, player);
+            if (actionType == SlotActionType.THROW && onThrow(slot, button, player))
+                super.onSlotClick(slot, button, actionType, player);
+        } catch (IndexOutOfBoundsException e) { }
     }
+
+    public boolean onClone(int slot, int button, PlayerEntity player) {
+        Slot slots = this.slots.get(slot);
+        boolean isPlayerInventory = slots.inventory == playerInventory;
+        return isPlayerInventory;
+    }
+
+    public boolean onPickup(int slot, int button, PlayerEntity player) {
+        Slot slots = this.slots.get(slot);
+        boolean isPlayerInventory = slots.inventory == playerInventory;
+        if (!isPlayerInventory) {
+            if (this.walletInventory.isValidItem(getCursorStack()) || getCursorStack().isEmpty()) {
+                if (getCursorStack().isEmpty()) setCursorStack(this.walletInventory.removeStack(slot));
+                else {
+                    this.walletInventory.setStack(0, getCursorStack());
+                    setCursorStack(ItemStack.EMPTY);
+                }
+            }
+        }
+
+        return isPlayerInventory;
+    }
+
+    public boolean onPickupAll(int slot, int button, PlayerEntity player) {
+        Slot slots = this.slots.get(slot);
+        boolean isPlayerInventory = slots.inventory == playerInventory;
+        return isPlayerInventory;
+    }
+
+    public boolean onQuickCraft(int slot, int button, PlayerEntity player) {
+        Slot slots = this.slots.get(slot);
+        boolean isPlayerInventory = slots.inventory == playerInventory;
+        return isPlayerInventory;
+    }
+
+    public boolean onQuickMove(int slot, int button, PlayerEntity player) {
+        Slot slots = this.slots.get(slot);
+        boolean isPlayerInventory = slots.inventory == playerInventory;
+        if (!isPlayerInventory) {
+            if (this.walletInventory.isValidItem(slots.getStack())) {
+                for (int index = 0; index < 9 * 4; index++) {
+                    Slot tempSlot = this.slots.get(index);
+                    if (tempSlot.getStack().isEmpty()) {
+                        tempSlot.setStack(this.walletInventory.removeStack(slot));
+                        break;
+                    }
+                }
+            }
+        } else {
+            if (this.walletInventory.isValidItem(slots.getStack())) {
+                this.walletInventory.setStack(0, slots.getStack());
+                slots.setStack(ItemStack.EMPTY);
+            } else {
+                boolean isHotbar = slot < 9;
+                int startIndex = isHotbar ? 9 : 0;
+                int endIndex = isHotbar ? 9 * 4 : 8;
+
+                for (int index = startIndex; index < endIndex; index++) {
+                    Slot tempSlot = this.slots.get(index);
+                    if (tempSlot.getStack().isEmpty()) {
+                        tempSlot.setStack(slots.getStack());
+                        slots.setStack(ItemStack.EMPTY);
+                        break;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean onSwap(int slot, int button, PlayerEntity player) {
+        Slot slots = this.slots.get(slot);
+        boolean isPlayerInventory = slots.inventory == playerInventory;
+        return isPlayerInventory;
+    }
+
+    public boolean onThrow(int slot, int button, PlayerEntity player) {
+        Slot slots = this.slots.get(slot);
+        boolean isPlayerInventory = slots.inventory == playerInventory;
+        if (!this.walletInventory.isOnDropCooldown()) {
+            this.walletInventory.setDropCooldown();
+        }
+        return isPlayerInventory || this.walletInventory.isOnDropCooldown();
+    }
+
+
+
+
+
+
+
+
 
     @Override
     public boolean canUse(PlayerEntity player) {
