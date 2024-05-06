@@ -1,8 +1,8 @@
 package com.traverse.taverntokens.networking;
 
-import com.traverse.taverntokens.client.screens.WalletScreenHandlerFactory;
 import com.traverse.taverntokens.interfaces.PlayerEntityWithBagInventory;
 import com.traverse.taverntokens.wallet.WalletInventory;
+import com.traverse.taverntokens.wallet.WalletScreenHandlerFactory;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

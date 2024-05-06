@@ -1,7 +1,6 @@
-package com.traverse.taverntokens.client.screens;
+package com.traverse.taverntokens.wallet;
 
 import com.traverse.taverntokens.References;
-import com.traverse.taverntokens.wallet.WalletScreenHandler;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;

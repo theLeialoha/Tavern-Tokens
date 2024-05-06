@@ -1,6 +1,7 @@
 package com.traverse.taverntokens.wallet;
 
-import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 import com.traverse.taverntokens.registry.ModItems;
 
@@ -13,10 +14,11 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.DefaultedList;
 
 public class WalletInventory implements Inventory {
 
-    private HashMap<Item, Long> inventory = new HashMap<>();
+    public DefaultedList<WalletItemStack> stacks = DefaultedList.ofSize(6*4, WalletItemStack.EMPTY);
     private double cooldown = 0;
 
     @Override
@@ -24,79 +26,73 @@ public class WalletInventory implements Inventory {
         return true;
     }
 
-    @Override
-    public ItemStack getStack(int slot) {
+    public WalletItemStack getCopy(int slot) {
         slot -= 9 * 4; // Default player inventory
-        if (inventory.size() <= slot) return ItemStack.EMPTY;
-        
-        Item item = inventory.keySet().toArray(Item[]::new)[slot];
-        ItemStack original = new ItemStack(item);
-        Long count = inventory.get(item) - 1;
+        return stacks.get(slot).copy();
+    }
 
-        NbtList lore = new NbtList();
-        NbtCompound display = new NbtCompound();
-        NbtCompound compound = new NbtCompound();
-        
-        lore.add(NbtString.of("{\"text\":\"Total: " + count + "\", \"color\":\"#f5d69d\",\"italic\":false}"));
-        display.put("Lore", lore);
-        compound.put("display", display);
-        original.setNbt(compound);
-
-        original.setCount(1);
-        return original;
+    @Override
+    public WalletItemStack getStack(int slot) {
+        try {
+            WalletItemStack original = getCopy(slot);
+            NbtList lore = new NbtList();
+            NbtCompound display = new NbtCompound();
+            NbtCompound compound = new NbtCompound();
+            
+            lore.add(NbtString.of("{\"text\":\"Total: " + original.getItemCount() + "\", \"color\":\"#f5d69d\",\"italic\":false}"));
+            display.put("Lore", lore);
+            compound.put("display", display);
+            original.setNbt(compound);
+            return original;
+        } catch (Exception e) {
+            return WalletItemStack.EMPTY;
+        }
     }
 
     @Override
     public int count(Item item) {
-        return (int) Math.min(64, inventory.get(item));
+        Optional<WalletItemStack> itemstack = stacks.stream().filter(i -> i.isOf(item)).findFirst();
+        return itemstack.isEmpty() ? 0 : itemstack.get().getCount();
     }
 
     @Override
     public boolean isEmpty() {
-        return inventory.isEmpty();
+        return stacks.stream().filter(i -> !i.isEmpty()).count() == 0;
     }
 
     @Override
-    public void markDirty() {
-        // Remove any empty coins
-        @SuppressWarnings("unchecked")
-        HashMap<Item, Long> tempInventory = (HashMap<Item, Long>) inventory.clone();
-
-        tempInventory.entrySet().stream().filter(e -> e.getValue() == 0L)
-            .forEach(e -> inventory.remove(e.getKey()));
-    }
+    public void markDirty() { }
 
     @Override
     public ItemStack removeStack(int slot) {
-        slot -= 9 * 4; // Default player inventory
-        Item item = inventory.keySet().toArray(Item[]::new)[slot];
-        ItemStack original = new ItemStack(item);
-        Long amountInBag = inventory.get(item);
-        int amountToTake = (int) Math.min(amountInBag, 64);
-        if (amountInBag - amountToTake != 0) inventory.put(item, amountInBag - amountToTake);
-        else inventory.remove(item);
-        original.setCount(amountToTake);
-        return original;
+        return removeStack(slot, 64);
     }
 
     @Override
     public ItemStack removeStack(int slot, int amount) {
         slot -= 9 * 4; // Default player inventory
-        Item item = inventory.keySet().toArray(Item[]::new)[slot];
-        ItemStack original = new ItemStack(item);
-        Long amountInBag = inventory.get(item);
-        if (amountInBag - amount != 0) inventory.put(item, amountInBag - amount);
-        else inventory.remove(item);
-        original.setCount(amount);
-        return original;
+        WalletItemStack original = stacks.get(slot);
+        ItemStack split = original.split(amount);
+
+        if (original.isEmpty() || original.getItemCount() == 0) {
+            List<WalletItemStack> copyStacks = List.copyOf(stacks);
+            stacks = DefaultedList.ofSize(6 * 4, WalletItemStack.EMPTY);
+            int i = 0;
+            for (WalletItemStack walletItemStack : copyStacks) {
+                if (!walletItemStack.isEmpty() && walletItemStack.getItemCount() > 0) {
+                    stacks.set(i, walletItemStack);
+                    i++;
+                }
+            }
+        }
+
+        return split;
     }
 
     public int getStackSize(int slot) {
         slot -= 9 * 4; // Default player inventory
-        Item item = inventory.keySet().toArray(Item[]::new)[slot];
-        Long amountInBag = inventory.get(item);
-        int amountToTake = (int) Math.min(amountInBag, 64);
-        return amountToTake;
+        WalletItemStack original = stacks.get(slot);
+        return original.getCount();
     }
 
     @Override
@@ -104,12 +100,19 @@ public class WalletInventory implements Inventory {
         slot -= 9 * 4; // Default player inventory
         if (!hasRoomFor(stack)) return; // Safety net
 
-        if (!inventory.keySet().contains(stack.getItem()))
-            inventory.put(stack.getItem(), (long) stack.getCount());
-        else {
-            Long amountInBag = inventory.get(stack.getItem());
-            inventory.put(stack.getItem(), amountInBag + stack.getCount());
-        }
+        WalletItemStack walletItemStack;
+        if (stack instanceof WalletItemStack walletStack) walletItemStack = walletStack;
+        else walletItemStack = new WalletItemStack(stack);
+
+        // Optional<WalletItemStack> itemFilter = stacks.stream()
+        //         .filter(i -> i.isOf(stack.getItem())).findFirst();
+        // boolean hasItem = itemFilter.isPresent();
+
+        stacks.set(slot, walletItemStack);
+
+        // if (hasItem) itemFilter.get().setCount(count);
+        // else stacks.add(0, new WalletItemStack(stack));
+        // stacks.set(slot, new WalletItemStack(stack));
     }
 
     public boolean isValidItem(ItemStack stack) {
@@ -117,14 +120,13 @@ public class WalletInventory implements Inventory {
     }
 
     public boolean hasRoomFor(ItemStack stack) {
-        boolean hasRoom = inventory.keySet().contains(stack.getItem())
-                || inventory.size() != size();
+        Optional<WalletItemStack> itemFilter = stacks.stream()
+                .filter(i -> i.isOf(stack.getItem())).findFirst();
+
+        boolean hasRoom = itemFilter.isPresent()
+                || size() - 1 != stacks.size();
 
         return isValidItem(stack) && hasRoom;
-    }
-
-    public Item[] getInventory() {
-        return this.inventory.keySet().toArray(Item[]::new);
     }
 
     public int getMaxItemCount() {
@@ -138,15 +140,18 @@ public class WalletInventory implements Inventory {
 
     @Override
     public int size() {
-        return Math.min(inventory.size() + 1, 4*6);
+        int size = (int) stacks.stream().filter(i -> !i.isEmpty() || i.getCount() > 0).count(); 
+        return Math.min(size + 1, 4*6);
     }
 
     @Override
     public void clear() {
-        inventory.clear();
+        stacks.clear();
     }
 
     public void readNbtList(NbtList nbtList) {
+        stacks = DefaultedList.ofSize(6*4, WalletItemStack.EMPTY);
+
         for (int i = 0; i < nbtList.size(); ++i) {
             NbtCompound nbtCompound = nbtList.getCompound(i);
             Identifier identifier = Identifier.tryParse(nbtCompound.getString("id"));
@@ -154,20 +159,21 @@ public class WalletInventory implements Inventory {
 
             Item item = Registries.ITEM.get(identifier);
             Long count = nbtCompound.getLong("Count");
-            inventory.put(item, count);
+            stacks.set(i, new WalletItemStack(item, count));
         }
     }
 
     public NbtList toNbtList() {
         NbtList nbtList = new NbtList();
 
-        for (Item item : inventory.keySet()) {
-            Identifier identifier = Registries.ITEM.getId(item);
+        for (WalletItemStack item : stacks) {
+            if (item.isEmpty()) continue;
+            Identifier identifier = Registries.ITEM.getId(item.getItem());
             if (identifier == null) continue;
 
             NbtCompound nbtCompound = new NbtCompound();
             nbtCompound.putString("id", identifier.toString());
-            nbtCompound.putLong("Count", inventory.get(item));
+            nbtCompound.putLong("Count", item.getItemCount());
             nbtList.add(nbtCompound);
         }
 
@@ -183,7 +189,18 @@ public class WalletInventory implements Inventory {
     }
 
     public void copy(WalletInventory walletInventory) {
-        inventory.putAll(walletInventory.inventory);
+        stacks = walletInventory.stacks;
+    }
+
+    public void addItemStack(ItemStack stack) {
+        Optional<WalletItemStack> walletItem = stacks.stream().filter(i -> i.isOf(stack.getItem()) && !i.isEmpty()).findFirst();
+        if (walletItem.isPresent()) {
+            walletItem.get().increment(stack.getCount());
+            stack.decrement(stack.getCount());
+        } else if (hasRoomFor(stack)) {
+            stacks.set(size() - 1, new WalletItemStack(stack));
+            stack.decrement(stack.getCount());
+        }
     }
 
 }

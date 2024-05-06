@@ -1,6 +1,5 @@
 package com.traverse.taverntokens.wallet;
 
-import com.traverse.taverntokens.References;
 import com.traverse.taverntokens.TavernTokens;
 import com.traverse.taverntokens.interfaces.PlayerEntityWithBagInventory;
 import com.traverse.taverntokens.networking.PacketHandler;
@@ -44,26 +43,20 @@ public class WalletScreenHandler extends ScreenHandler {
                 int x = 62 + col * 18;
                 int y = 8 + row * 18;
 
-                addSlot(new WalletSlot(walletInventory, slotOffset + col + row * 9, x, y));
+                addSlot(new WalletSlot(walletInventory, slotOffset + col + row * 6, x, y));
             }
         }
-
-        enableSyncing();
-        updateToClient();
     }
 
     @Override
     public void updateToClient() {
-        super.updateToClient();
-        if (this.player instanceof ServerPlayerEntity serverPlayer) {
+        if (player instanceof ServerPlayerEntity serverPlayer) {
             PacketHandler.updateWallet(serverPlayer, walletInventory);
         }
     }
 
     @Override
     public void onSlotClick(int slot, int button, SlotActionType actionType, PlayerEntity player) {
-        if (!(player instanceof ServerPlayerEntity)) return;
-
         try {
             // Fuck MCreator ---- MUFFIN TIME
             switch (actionType) {
@@ -75,44 +68,42 @@ public class WalletScreenHandler extends ScreenHandler {
                 case SWAP -> onSwap(slot, button, player);
                 case THROW -> onThrow(slot, button, player);
             }
-        } catch (IndexOutOfBoundsException e) { }
 
-        if (actionType != SlotActionType.THROW)
-            updateToClient();
+            boolean isWallet = this.slots.get(slot).inventory == walletInventory;
+            if (isWallet) updateToClient();
+        } catch (IndexOutOfBoundsException e) { }
     }
     
     public void onClone(int slot, int button, PlayerEntity player) {
         Slot slots = this.slots.get(slot);
         boolean isPlayerInventory = slots.inventory == playerInventory;
+        if (!isPlayerInventory) {
+            ItemStack stack = walletInventory.getCopy(slot).toItemStack();
+            setCursorStack(stack);
+        } else super.onSlotClick(slot, button, SlotActionType.CLONE, player);
     }
 
     public void onPickup(int slot, int button, PlayerEntity player) {
         Slot slots = this.slots.get(slot);
         boolean isPlayerInventory = slots.inventory == playerInventory;
         if (!isPlayerInventory) {
-            if (this.walletInventory.isValidItem(getCursorStack()) || getCursorStack().isEmpty()) {
-                if (getCursorStack().isEmpty()) {
-                    int stackSize = this.walletInventory.getStackSize(slot);
-                    int scale = button + 1;
-                    setCursorStack(this.walletInventory.removeStack(slot, stackSize / scale));
-                } else {
-                    ItemStack itemToInsert = getCursorStack();
-                    int amount = itemToInsert.getCount();
-                    itemToInsert.setCount(button == 0 ? amount : 1);
-
-                    this.walletInventory.setStack(0, itemToInsert);
-                    itemToInsert.setCount(amount - itemToInsert.getCount());
-                    setCursorStack(itemToInsert);
+            ItemStack stack = getCursorStack();
+            if (walletInventory.isValidItem(stack) || stack.isEmpty()) {
+                if (stack.isEmpty()) {
+                    int divider = button + 1;
+                    stack = walletInventory.removeStack(slot, 64 / divider);
+                    setCursorStack(stack);
+                } else if (slots.canInsert(stack)) {
+                    if (walletInventory.isValidItem(stack)) {
+                        walletInventory.addItemStack(stack);
+                    }
                 }
             }
         } else super.onSlotClick(slot, button, SlotActionType.PICKUP, player);
     }
 
     public void onPickupAll(int slot, int button, PlayerEntity player) {
-        Slot slots = this.slots.get(slot);
-        boolean isPlayerInventory = slots.inventory == playerInventory;
-
-        // TODO: Force a limt
+        // Automatically ignored
     }
 
     public void onQuickCraft(int slot, int button, PlayerEntity player) {
@@ -134,8 +125,7 @@ public class WalletScreenHandler extends ScreenHandler {
             }
         } else {
             if (this.walletInventory.isValidItem(slots.getStack())) {
-                this.walletInventory.setStack(0, slots.getStack());
-                slots.setStack(ItemStack.EMPTY);
+                this.walletInventory.addItemStack(slots.getStack());
             } else {
                 boolean isHotbar = slot < 9;
                 int startIndex = isHotbar ? 9 : 0;
@@ -156,14 +146,12 @@ public class WalletScreenHandler extends ScreenHandler {
     public void onSwap(int slot, int button, PlayerEntity player) {
         Slot slots = this.slots.get(slot);
         boolean isPlayerInventory = slots.inventory == playerInventory;
+        if (isPlayerInventory) super.onSlotClick(slot, button, SlotActionType.SWAP, player);
+        // TODO: Allow Hotbar Swapping
     }
 
     public void onThrow(int slot, int button, PlayerEntity player) {
-        Slot slots = this.slots.get(slot);
-        boolean isPlayerInventory = slots.inventory == playerInventory;
-        if (!this.walletInventory.isOnDropCooldown()) {
-            this.walletInventory.setDropCooldown();
-        }
+        // Automatically ignored
     }
 
 
