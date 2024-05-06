@@ -1,5 +1,7 @@
 package com.traverse.taverntokens.wallet;
 
+import java.util.List;
+
 import com.traverse.taverntokens.interfaces.WalletItemStackInterface;
 
 import net.minecraft.item.Item;
@@ -138,6 +140,15 @@ public class WalletItemStack extends ItemStack implements WalletItemStackInterfa
 
     public long getItemCount() {
         return this.isEmpty() ? 0 : this.count;
+    }
+
+    public String getItemCountShort() {
+        List<String> numAbbrv = List.of("", "K","M","B","T","Qa","Qi");
+        for (int i = 0; i < numAbbrv.size(); i++) {
+            double c = Math.floor(this.count / Math.pow(1000L, i));
+            if (c < 1000) return ((int) c) + numAbbrv.get(i);
+        }
+        return null;
     }
 
     @Deprecated
