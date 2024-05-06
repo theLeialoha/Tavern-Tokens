@@ -29,8 +29,11 @@ public abstract class InventoryScreenMixin extends HandledScreen<PlayerScreenHan
 
     @Inject(at = @At("TAIL"), method = "init", cancellable = true)
     private void init(CallbackInfo ci) {
+
+        int offsetChance = Math.floorDiv((int) Math.ceil(Math.random() * 100), 100) * 10;
+
         this.addDrawableChild(
-            new TexturedButtonWidget(this.x + 27, this.height / 2 - 16, 10, 10, 0, 0, 10, identifier_main, 10, 20, (button) -> {
+            new TexturedButtonWidget(this.x + 27, this.height / 2 - 16, 10, 10, offsetChance, 0, 10, identifier_main, 20, 20, (button) -> {
                 PacketHandler.requestWallet();
             })
         );

@@ -15,7 +15,7 @@ public class WalletSlot extends Slot {
 
     @Override
     public boolean canInsert(ItemStack stack) {
-        return ((WalletInventory) this.inventory).isValidItem(stack);
+        return ((WalletInventory) this.inventory).isValidItem(stack) && this.canBeHighlighted();
     }
 
     @Override
