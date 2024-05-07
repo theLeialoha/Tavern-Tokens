@@ -3,15 +3,17 @@
 	"id": "taverntokens",
 	"version": "${version}",
 	"name": "TavernTokens",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Tavern Tokens is a mod that adds a unique currency system to the game based on tangible items.",
 	"authors": [
-		"Me!"
+		"Leialoha",
+		"Traverse-Joe"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://modrinth.com/project/tavern-tokens",
+		"sources": "https://github.com/Traverse-Joe/Tavern-Tokens",
+		"issues": "https://github.com/Traverse-Joe/Tavern-Tokens/issues"
 	},
-	"license": "CC0-1.0",
+	"license": "GNU General Public License v3",
 	"icon": "assets/taverntokens/icon.png",
 	"accessWidener": "taverntokens.accesswidener",
 	"environment": "*",
@@ -32,7 +34,5 @@
 		"java": ">=17",
 		"fabric-api": "*"
 	},
-	"suggests": {
-		"another-mod": "*"
-	}
+	"suggests": {}
 }
