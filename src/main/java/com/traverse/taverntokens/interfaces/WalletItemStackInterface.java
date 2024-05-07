@@ -14,6 +14,10 @@ public interface WalletItemStackInterface {
         return null;
     }
 
+    static WalletItemStack fromNbt(NbtCompound nbt) {
+        return null;
+    }
+
     default NbtCompound writeNbt(NbtCompound nbt) {
         return null;
     }

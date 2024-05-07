@@ -14,8 +14,9 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-public class PacketHandler {
+public class PacketHandler extends PacketHandlerInterface {
 
+    @Environment(EnvType.CLIENT)
     public static void registerClient() {
         ClientPlayNetworking.registerGlobalReceiver(PacketConstants.UPDATE_WALLET_ID, (client, handler, buf, responseSender) -> {
             WalletInventory walletInventory = ((PlayerEntityWithBagInventory) client.player).getWalletInventory();

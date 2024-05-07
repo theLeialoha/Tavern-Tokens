@@ -2,7 +2,6 @@ package com.traverse.taverntokens.wallet;
 
 import com.traverse.taverntokens.TavernTokens;
 import com.traverse.taverntokens.interfaces.PlayerEntityWithBagInventory;
-import com.traverse.taverntokens.networking.PacketHandler;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -10,7 +9,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.server.network.ServerPlayerEntity;
 
 public class WalletScreenHandler extends ScreenHandler {
 
@@ -49,13 +47,6 @@ public class WalletScreenHandler extends ScreenHandler {
     }
 
     @Override
-    public void updateToClient() {
-        if (player instanceof ServerPlayerEntity serverPlayer) {
-            PacketHandler.updateWallet(serverPlayer, walletInventory);
-        }
-    }
-
-    @Override
     public void onSlotClick(int slot, int button, SlotActionType actionType, PlayerEntity player) {
         try {
             // Fuck MCreator ---- MUFFIN TIME
@@ -69,8 +60,8 @@ public class WalletScreenHandler extends ScreenHandler {
                 case THROW -> onThrow(slot, button, player);
             }
 
-            boolean isWallet = this.slots.get(slot).inventory == walletInventory;
-            if (isWallet) updateToClient();
+            // boolean isWallet = this.slots.get(slot).inventory == walletInventory;
+            // if (isWallet) updateToClient();
         } catch (IndexOutOfBoundsException e) { }
     }
     

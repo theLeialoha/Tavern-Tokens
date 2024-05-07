@@ -2,6 +2,7 @@ package com.traverse.taverntokens.wallet;
 
 import java.util.List;
 
+import com.traverse.taverntokens.References;
 import com.traverse.taverntokens.interfaces.WalletItemStackInterface;
 
 import net.minecraft.item.Item;
@@ -39,6 +40,13 @@ public class WalletItemStack extends ItemStack implements WalletItemStackInterfa
         this.count = count;
     }
 
+    private WalletItemStack(NbtCompound nbt) {
+        this(
+            Registries.ITEM.get(new Identifier(nbt.getString("id"))),
+            nbt.getLong("Count")
+        );
+    }
+
     @Override
     public boolean isEmpty() {
         return this == EMPTY || this.item == Items.AIR || this.count <= 0;
@@ -58,6 +66,15 @@ public class WalletItemStack extends ItemStack implements WalletItemStackInterfa
         WalletItemStack itemStack = this.copyWithCount(i);
         this.decrement(i);
         return itemStack;
+    }
+
+    public static WalletItemStack fromNbt(NbtCompound nbt) {
+        try {
+            return new WalletItemStack(nbt);
+        } catch (RuntimeException runtimeException) {
+            References.LOGGER.debug("Tried to load invalid item: {}", (Object) nbt, (Object) runtimeException);
+            return EMPTY;
+        }
     }
 
     @Override
