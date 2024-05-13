@@ -203,4 +203,9 @@ public class WalletInventory implements Inventory {
         }
     }
 
+    public void updateSlot(int slot, WalletItemStack walletItemStack) {
+        slot -= 9 * 4; // Default player inventory
+        stacks.set(slot, walletItemStack);
+    }
+
 }
