@@ -1,6 +1,7 @@
 package com.traverse.taverntokens.wallet;
 
 import java.util.List;
+import java.util.Objects;
 
 import com.traverse.taverntokens.References;
 import com.traverse.taverntokens.interfaces.WalletItemStackInterface;
@@ -10,6 +11,7 @@ import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
@@ -19,8 +21,9 @@ public class WalletItemStack extends ItemStack implements WalletItemStackInterfa
     private long count;
     public static final WalletItemStack EMPTY = new WalletItemStack(ItemStack.EMPTY);
 
-    public WalletItemStack(ItemStack item) {
+    private WalletItemStack(ItemStack item) {
         this(item.getItem(), item.getCount());
+        this.setNbt(item.getNbt());
     }
 
     public WalletItemStack(ItemConvertible item) {
@@ -45,6 +48,13 @@ public class WalletItemStack extends ItemStack implements WalletItemStackInterfa
             Registries.ITEM.get(new Identifier(nbt.getString("id"))),
             nbt.getLong("Count")
         );
+        if (nbt.contains("tag", (int) NbtElement.COMPOUND_TYPE)) {
+            super.setNbt(nbt.getCompound("tag"));
+            this.getItem().postProcessNbt(this.getNbt());
+        }
+        if (this.getItem().isDamageable()) {
+            this.setDamage(this.getDamage());
+        }
     }
 
     @Override
@@ -68,6 +78,10 @@ public class WalletItemStack extends ItemStack implements WalletItemStackInterfa
         return itemStack;
     }
 
+    public static WalletItemStack fromVanillaItemStack(ItemStack itemStack) {
+        return new WalletItemStack(itemStack);
+    }
+
     public static WalletItemStack fromNbt(NbtCompound nbt) {
         try {
             return new WalletItemStack(nbt);
@@ -82,6 +96,9 @@ public class WalletItemStack extends ItemStack implements WalletItemStackInterfa
         Identifier identifier = Registries.ITEM.getId(this.getItem());
         nbt.putString("id", identifier == null ? "minecraft:air" : identifier.toString());
         nbt.putLong("Count", this.count);
+        if (this.getNbt() != null) {
+            nbt.put("tag", (NbtElement) this.getNbt().copy());
+        }
         return nbt;
     }
 
@@ -98,6 +115,7 @@ public class WalletItemStack extends ItemStack implements WalletItemStackInterfa
         if (this.isEmpty()) return EMPTY;
         WalletItemStack itemStack = new WalletItemStack((ItemConvertible) this.getItem(), this.count);
         itemStack.setBobbingAnimationTime(this.getBobbingAnimationTime());
+        if (this.getNbt() != null) itemStack.setNbt(this.getNbt().copy());
         return itemStack;
     }
 
@@ -146,7 +164,19 @@ public class WalletItemStack extends ItemStack implements WalletItemStackInterfa
     public static boolean canCombine(WalletItemStack stack, WalletItemStack otherStack) {
         if (!stack.isOf(otherStack.getItem())) return false;
         if (stack.isEmpty() && otherStack.isEmpty()) return true;
-        return true;
+        return Objects.equals(stack.getNbt(), otherStack.getNbt());
+    }
+
+    public boolean hasNbt() {
+        return super.hasNbt();
+    }
+
+    public NbtCompound getNbt() {
+        return super.getNbt();
+    }
+
+    public void setNbt(NbtCompound nbt) {
+        super.setNbt(nbt);
     }
 
     @Deprecated
@@ -200,6 +230,8 @@ public class WalletItemStack extends ItemStack implements WalletItemStackInterfa
 
     public ItemStack toItemStack() {
         int count = (int) Math.min(this.getItemCount(), 64);
-        return new ItemStack(this.getItem(), count);
+        ItemStack stack = new ItemStack(this.getItem(), count);
+        stack.setNbt(this.getNbt());
+        return stack;
     }
 }

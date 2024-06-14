@@ -25,7 +25,6 @@ public abstract class DrawContextMixin {
     @Shadow
     public abstract int drawText(TextRenderer textRenderer, String text, int x, int y, int color, boolean shadow);
 
-    // @Inject(at = @At("HEAD"), method = "drawItemInSlot(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V")
     @ModifyVariable(at = @At("HEAD"), method = "drawItemInSlot(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V")
     private String drawItemInSlot$ModifyVariable(String countOverride, TextRenderer textRenderer, ItemStack stack, int x, int y) {
         return (stack instanceof WalletItemStack) ? "" : countOverride;

@@ -10,6 +10,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.nbt.NbtString;
 import net.minecraft.registry.Registries;
@@ -35,10 +36,10 @@ public class WalletInventory implements Inventory {
     public WalletItemStack getStack(int slot) {
         try {
             WalletItemStack original = getCopy(slot);
-            NbtList lore = new NbtList();
-            NbtCompound display = new NbtCompound();
-            NbtCompound compound = new NbtCompound();
-            
+            NbtCompound compound = original.getOrCreateNbt();
+            NbtCompound display = compound.getCompound("display");
+            NbtList lore = compound.getList("Lore", NbtElement.STRING_TYPE);
+
             lore.add(NbtString.of("{\"text\":\"Total: " + original.getItemCount() + "\", \"color\":\"#f5d69d\",\"italic\":false}"));
             display.put("Lore", lore);
             compound.put("display", display);
@@ -102,7 +103,7 @@ public class WalletInventory implements Inventory {
 
         WalletItemStack walletItemStack;
         if (stack instanceof WalletItemStack walletStack) walletItemStack = walletStack;
-        else walletItemStack = new WalletItemStack(stack);
+        else walletItemStack = WalletItemStack.fromVanillaItemStack(stack);
 
         // Optional<WalletItemStack> itemFilter = stacks.stream()
         //         .filter(i -> i.isOf(stack.getItem())).findFirst();
@@ -111,8 +112,8 @@ public class WalletInventory implements Inventory {
         stacks.set(slot, walletItemStack);
 
         // if (hasItem) itemFilter.get().setCount(count);
-        // else stacks.add(0, new WalletItemStack(stack));
-        // stacks.set(slot, new WalletItemStack(stack));
+        // else stacks.add(0, WalletItemStack.fromVanillaItemStack(stack));
+        // stacks.set(slot, WalletItemStack.fromVanillaItemStack(stack));
     }
 
     public boolean isValidItem(ItemStack stack) {
@@ -157,9 +158,7 @@ public class WalletInventory implements Inventory {
             Identifier identifier = Identifier.tryParse(nbtCompound.getString("id"));
             if (identifier == null) continue;
 
-            Item item = Registries.ITEM.get(identifier);
-            Long count = nbtCompound.getLong("Count");
-            stacks.set(i, new WalletItemStack(item, count));
+            stacks.set(i, WalletItemStack.fromNbt(nbtCompound));
         }
     }
 
@@ -172,8 +171,7 @@ public class WalletInventory implements Inventory {
             if (identifier == null) continue;
 
             NbtCompound nbtCompound = new NbtCompound();
-            nbtCompound.putString("id", identifier.toString());
-            nbtCompound.putLong("Count", item.getItemCount());
+            item.writeNbt(nbtCompound);
             nbtList.add(nbtCompound);
         }
 
@@ -193,12 +191,17 @@ public class WalletInventory implements Inventory {
     }
 
     public void addItemStack(ItemStack stack) {
-        Optional<WalletItemStack> walletItem = stacks.stream().filter(i -> i.isOf(stack.getItem()) && !i.isEmpty()).findFirst();
-        if (walletItem.isPresent()) {
+        Optional<WalletItemStack> walletItem = stacks.stream().filter(i -> WalletItemStack.canCombine(i, WalletItemStack.fromVanillaItemStack(stack))).findFirst();
+        if (walletItem.isPresent() && !walletItem.get().hasNbt()) {
             walletItem.get().increment(stack.getCount());
             stack.decrement(stack.getCount());
+        } else if (hasRoomFor(stack) && stack.hasNbt()) {
+            WalletItemStack newStack = WalletItemStack.fromVanillaItemStack(stack);
+            newStack.setCount(1L);
+            stacks.set(size() - 1, newStack);
+            stack.decrement(1);
         } else if (hasRoomFor(stack)) {
-            stacks.set(size() - 1, new WalletItemStack(stack));
+            stacks.set(size() - 1, WalletItemStack.fromVanillaItemStack(stack));
             stack.decrement(stack.getCount());
         }
     }
