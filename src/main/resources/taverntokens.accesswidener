@@ -1,7 +1,0 @@
-accessWidener	v1	named
-# Proudly stolen from https://github.com/CardboardPowered/cardboard
-extendable	class	net/minecraft/item/ItemStack
-accessible	field	net/minecraft/item/ItemStack	count	I
-mutable	field	net/minecraft/item/ItemStack	count	I
-accessible	field	net/minecraft/item/ItemStack	item	Lnet/minecraft/item/Item;
-mutable	field	net/minecraft/item/ItemStack	item	Lnet/minecraft/item/Item;

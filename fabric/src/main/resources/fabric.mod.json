@@ -1,0 +1,40 @@
+{
+    "schemaVersion": 1,
+    "id": "taverntokens",
+    "version": "${mod_version}",
+    "name": "TavernTokens",
+    "description": "Tavern Tokens is a mod that adds a unique currency system to the game based on tangible items.",
+    "authors": [
+        "Leialoha",
+        "Traverse-Joe"
+    ],
+    "contact": {
+        "homepage": "https://modrinth.com/project/tavern-tokens",
+        "sources": "https://github.com/Traverse-Joe/Tavern-Tokens",
+        "issues": "https://github.com/Traverse-Joe/Tavern-Tokens/issues"
+    },
+    "license": "GNU General Public License v3",
+    "icon": "assets/taverntokens/icon.png",
+    "accessWidener": "taverntokens.accesswidener",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "com.traverse.taverntokens.FabricTavernTokens"
+        ],
+        "client": [
+            "com.traverse.taverntokens.FabricTavernTokens"
+        ]
+    },
+    "mixins": [
+        "taverntokens.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": "${fabric_loader_dependency}",
+        "minecraft": "${minecraft_dependency}",
+        "java": "${java_version}"
+    },
+    "suggests": {
+        "modmenu": "*",
+        "cloth-config2": ">=${cloth_config_version}"
+    }
+}
