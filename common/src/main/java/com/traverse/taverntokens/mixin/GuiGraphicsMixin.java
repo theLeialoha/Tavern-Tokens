@@ -1,5 +1,8 @@
 package com.traverse.taverntokens.mixin;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

@@ -9,7 +9,7 @@ Changelog
 ### Fixes
 
 *   [0b3e2ce](https://github.com/Traverse-Joe/Tavern-Tokens/commit/0b3e2ce7c1d465db60651f71d7b4fe76dd52ce5b) - Convert into Multi-project
-*   [1319ae23](https://github.com/Traverse-Joe/Tavern-Tokens/commit/1319ae234e730430d6bc83ae9babe0de07ce8f39) - Added Forge support
+*   [1319ae2](https://github.com/Traverse-Joe/Tavern-Tokens/commit/1319ae234e730430d6bc83ae9babe0de07ce8f39) - Added Forge support
 
 ---
 

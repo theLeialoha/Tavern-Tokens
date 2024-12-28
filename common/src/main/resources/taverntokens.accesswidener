@@ -1,4 +1,8 @@
 accessWidener    v1    named
+
+# Comments like this are supported, as well as at the end of the line
+# If you would like more information on this, visit https://wiki.fabricmc.net/tutorial:accesswideners
+
 # Proudly stolen from https://github.com/CardboardPowered/cardboard
 extendable    class    net/minecraft/world/item/ItemStack
 accessible    field    net/minecraft/world/item/ItemStack    count    I
@@ -8,3 +12,5 @@ mutable    field    net/minecraft/world/item/ItemStack    item    Lnet/minecraft
 
 extendable    class    net/minecraft/world/inventory/MenuType$MenuSupplier
 accessible    method    net/minecraft/world/inventory/MenuType <init> (Lnet/minecraft/world/inventory/MenuType$MenuSupplier;Lnet/minecraft/world/flag/FeatureFlagSet;)V
+
+accessible    field    net/minecraft/network/Connection    channel    Lio/netty/channel/Channel;

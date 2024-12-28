@@ -1,0 +1,2 @@
+MixinConfigs: taverntokens.mixins.json
+MixinConnector: com.traverse.taverntokens.MixinConnector

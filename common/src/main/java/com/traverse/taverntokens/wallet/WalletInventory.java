@@ -11,8 +11,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.nbt.StringTag;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.NonNullList;
@@ -34,21 +32,8 @@ public class WalletInventory implements Container {
 
     @Override
     public WalletItemStack getItem(int slot) {
-        try {
-            WalletItemStack original = getCopy(slot);
-            CompoundTag compound = original.getOrCreateTag();
-            CompoundTag display = compound.getCompound("display");
-            ListTag lore = compound.getList("Lore", Tag.TAG_STRING);
-
-            lore.add(StringTag.valueOf(
-                    "{\"text\":\"Total: " + original.getLongCount() + "\", \"color\":\"#f5d69d\",\"italic\":false}"));
-            display.put("Lore", lore);
-            compound.put("display", display);
-            original.setTag(compound);
-            return original;
-        } catch (Exception e) {
-            return WalletItemStack.EMPTY;
-        }
+        slot -= 9 * 4; // Default player inventory
+        return stacks.get(slot).copy();
     }
 
     @Override

@@ -6,12 +6,17 @@ import java.util.Objects;
 import com.traverse.taverntokens.TavernTokens;
 import com.traverse.taverntokens.interfaces.WalletItemStackInterface;
 
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.RegistryAccess.RegistryEntry;
 import net.minecraft.resources.ResourceLocation;
@@ -241,5 +246,15 @@ public class WalletItemStack extends ItemStack implements WalletItemStackInterfa
         ItemStack stack = new ItemStack(this.getItem(), count);
         stack.setTag(this.getTag());
         return stack;
+    }
+
+    @Override
+    public List<Component> getTooltipLines(Player player, TooltipFlag tooltipFlag) {
+        List<Component> tooltip = super.getTooltipLines(player, tooltipFlag);
+
+        tooltip.add(Component.translatable("tooltip." + TavernTokens.MODID + ".count", getLongCount())
+                .setStyle(Style.EMPTY.withColor(TextColor.fromRgb(0xf5d69d)).withItalic(true)));
+
+        return tooltip;
     }
 }

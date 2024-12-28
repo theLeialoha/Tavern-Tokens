@@ -1,0 +1,35 @@
+plugins {
+    id 'net.minecraftforge.gradle' version "${forgegradle_version}"
+    id 'org.spongepowered.mixin' version "${mixingradle_version}"
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'com.matthewprenger.cursegradle'
+apply plugin: 'com.modrinth.minotaur'
+apply plugin: 'mod-update'
+
+apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
+
+processResources {
+    filesMatching('**/*.toml') {
+        expand 'mod_id': mod_id,
+                'mod_version': mod_version,
+                'mod_display_name': mod_display_name, 
+                'forge_dependency': forge_dependency,
+                'minecraft_version': minecraft_version,
+                'cloth_config_version': cloth_config_version
+    }
+}
+
+repositories {
+    maven { url = 'https://maven.shedaniel.me/' }
+}
+
+dependencies {
+    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}")
+}
+
+shadowJar.dependsOn('reobfJar')
+reobf {
+    shadowJar {}
+}

@@ -3,6 +3,7 @@ package com.traverse.taverntokens.mixin;
 import com.traverse.taverntokens.interfaces.PlayerWithBagInventory;
 import com.traverse.taverntokens.networking.PacketHandler;
 import com.traverse.taverntokens.wallet.WalletItemStack;
+import com.traverse.taverntokens.wallet.WalletSlot;
 import com.traverse.taverntokens.wallet.WalletContainerMenu;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -49,7 +50,11 @@ public class ServerPlayerMixin extends PlayerMixin {
 
                 @Override
                 public void sendSlotChange(AbstractContainerMenu menu, int slot, ItemStack stack) {
-                    if (stack instanceof WalletItemStack walletItem) {
+                    if (menu.getSlot(slot) instanceof WalletSlot walletSlot) {
+                        WalletItemStack walletItem = (WalletItemStack) walletSlot.getItem();
+                        CompoundTag walletItemAsNBT = walletItem.save(new CompoundTag());
+                        PacketHandler.updateWalletSlot(that, slot, walletItemAsNBT);
+                    } else if (stack instanceof WalletItemStack walletItem) {
                         CompoundTag walletItemAsNBT = walletItem.save(new CompoundTag());
                         PacketHandler.updateWalletSlot(that, slot, walletItemAsNBT);
                     } else {

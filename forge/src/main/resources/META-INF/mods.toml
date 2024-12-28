@@ -1,0 +1,32 @@
+modLoader = "javafml"
+loaderVersion = "*"
+license = "MIT"
+issueTrackerURL = "https://github.com/Traverse-Joe/Tavern-Tokens/issues"
+[[mods]]
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "${mod_display_name}"
+displayURL = "https://modrinth.com/project/tavern-tokens"
+logoFile = "icon.png"
+authors = "Leialoha, Traverse-Joe"
+credits = "Traverse-Joe"
+description = '''Tavern Tokens is a mod that adds a unique currency system to the game based on tangible items.'''
+displayTest = "IGNORE_ALL_VERSION"
+[[dependencies.${mod_id}]]
+modId = "forge"
+mandatory = true
+versionRange = "${forge_dependency}"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[${minecraft_version}]"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.${mod_id}]]
+modId = "cloth_config"
+mandatory = false
+versionRange = "[${cloth_config_version},)"
+ordering = "AFTER"
+side = "BOTH"

@@ -1,8 +1,8 @@
 {
     "schemaVersion": 1,
-    "id": "taverntokens",
+    "id": "${mod_id}",
     "version": "${mod_version}",
-    "name": "TavernTokens",
+    "name": "${mod_display_name}",
     "description": "Tavern Tokens is a mod that adds a unique currency system to the game based on tangible items.",
     "authors": [
         "Leialoha",
@@ -13,7 +13,7 @@
         "sources": "https://github.com/Traverse-Joe/Tavern-Tokens",
         "issues": "https://github.com/Traverse-Joe/Tavern-Tokens/issues"
     },
-    "license": "GNU General Public License v3",
+    "license": "MIT License",
     "icon": "assets/taverntokens/icon.png",
     "accessWidener": "taverntokens.accesswidener",
     "environment": "*",
