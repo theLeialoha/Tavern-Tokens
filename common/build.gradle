@@ -1,7 +1,7 @@
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'fabric-loom'
 
-apply from: "https://raw.githubusercontent.com/henkelmax/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
+apply from: "https://raw.githubusercontent.com/theLeialoha/mod-gradle-scripts/${mod_gradle_script_version}/mod.gradle"
 
 repositories {
     maven { url = 'https://maven.shedaniel.me/' }

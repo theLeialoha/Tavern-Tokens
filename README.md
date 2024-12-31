@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Traverse-Joe/Tavern-Tokens/assets/banner.png">
+  <img src="https://raw.githubusercontent.com/theLeialoha/Tavern-Tokens/assets/banner.png">
 </p>
 
 # Tavern Tokens
@@ -16,7 +16,7 @@ If you wish to create your own currency, make sure to add the tag `taverntokens:
 Tavern Tokens requires the **Fabric API** to work. As for right now, this mod is only made for fabric. This means that **Forge** will _not_ work.
 
 ## Download
-You can find the downloads for each version with their release notes in the [releases page](https://github.com/Traverse-Joe/Tavern-Tokens/releases). Or alternatively, you can also download it from [Modrinth](https://modrinth.com/project/tavern-tokens) or [CurseForge](https://curseforge.com/minecraft/mc-mods/tavern-tokens).
+You can find the downloads for each version with their release notes in the [releases page](https://github.com/theLeialoha/Tavern-Tokens/releases). Or alternatively, you can also download it from [Modrinth](https://modrinth.com/project/tavern-tokens) or [CurseForge](https://curseforge.com/minecraft/mc-mods/tavern-tokens).
 
 
 ## Compiling
@@ -26,4 +26,4 @@ Tavern Tokens uses Gradle when compiling. If you would like to build your own ve
 ./gradlew clean build # on UNIX-based systems (mac, linux)
 gradlew clean build # on Windows
 ```
-You can get source code from the [releases page](https://github.com/Traverse-Joe/Tavern-Tokens/releases). You may also clone this repository, but that code may or may not be stable.
+You can get source code from the [releases page](https://github.com/theLeialoha/Tavern-Tokens/releases). You may also clone this repository, but that code may or may not be stable.

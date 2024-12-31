@@ -10,8 +10,8 @@
     ],
     "contact": {
         "homepage": "https://modrinth.com/project/tavern-tokens",
-        "sources": "https://github.com/Traverse-Joe/Tavern-Tokens",
-        "issues": "https://github.com/Traverse-Joe/Tavern-Tokens/issues"
+        "sources": "https://github.com/theLeialoha/Tavern-Tokens",
+        "issues": "https://github.com/theLeialoha/Tavern-Tokens/issues"
     },
     "license": "MIT License",
     "icon": "assets/taverntokens/icon.png",
