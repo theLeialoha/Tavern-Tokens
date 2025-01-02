@@ -1,39 +1,43 @@
-# Builds the repository and saves it to an artifact
+# Automatically build the project and run any configured tests for every push
+# and submitted pull request. This can help catch issues that only occur on
+# certain platforms or Java versions, and provides a first line of defence
+# against bad commits.
 
-name: Build Mod
-on: 
-  workflow_call:
-    inputs:
-      artifact_name:
-        type: string
-        default: artifact
-        required: false
+name: Check for Updates
+# on: [pull_request, push]
+on:
+    pull_request:
+    push:
+        paths-ignore: 
+            - .github/**/*
+        tags-ignore:
+            - '*'
 
 jobs:
   build:
     strategy:
       matrix:
         java: [ 21 ]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
-      - name: checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
-      - name: validate gradle wrapper
+      - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v2
-      - name: setup jdk ${{ matrix.java }}
+      - name: Setup JDK ${{ matrix.java }}
         uses: actions/setup-java@v4
         with:
           java-version: ${{ matrix.java }}
           distribution: 'microsoft'
-      - name: make gradle wrapper executable
+      - name: Make Gradle Wrapper Executable
         run: chmod +x ./gradlew
-      - name: build
+      - name: Build
         run: ./gradlew build
-      - name: capture build artifacts
+      - name: Capture build artifacts
         if: ${{ matrix.java == '21' }}
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.artifact_name }}
+          name: Artifact
           path: |
             */build/libs/
             !*/build/libs/*-dev.jar

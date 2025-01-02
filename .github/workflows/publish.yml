@@ -7,25 +7,62 @@ on:
     types:
       - created
 
+env:
+  artifact_name: production
+
 jobs:
   build:
-    uses: ./.github/workflows/build.yml
-    with:
-      artifact_name: published
+    strategy:
+      matrix:
+        java: [ 21 ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v2
+      - name: Setup JDK ${{ matrix.java }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'microsoft'
+      - name: Make Gradle Wrapper Executable
+        run: chmod +x ./gradlew
+      - name: Build
+        run: ./gradlew build
+      - name: Capture Build Artifacts
+        if: ${{ matrix.java == '21' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.artifact_name }}
+          path: |
+            */build/libs/
+            !*/build/libs/*-dev.jar
+            !common/build/libs/
 
   upload:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: published
+      - name: Update Mod Update Server
+        env:
+          MOD_UPDATE_API_KEY: ${{ secrets.MOD_UPDATE_KEY }}
+        run: ./gradlew modUpdate
+      - name: Upload to CurseForge
+        env:
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_UPDATE_KEY }}
+        run: ./gradlew curseforge
+      - name: Upload to Modrinth
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_UPDATE_KEY }}
+        run: ./gradlew modrinth
 
       - name: Upload binaries to release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            **/*.jar
+            */build/libs/*.jar
+            !**/*-dev.jar
+            !common
