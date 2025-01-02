@@ -30,21 +30,7 @@ jobs:
         run: chmod +x ./gradlew
       - name: Build
         run: ./gradlew build
-      - name: Capture Build Artifacts
-        if: ${{ matrix.java == '21' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.artifact_name }}
-          path: |
-            */build/libs/
-            !*/build/libs/*-dev.jar
-            !common/build/libs/
 
-  upload:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
       - name: Update Mod Update Server
         env:
           MOD_UPDATE_API_KEY: ${{ secrets.MOD_UPDATE_KEY }}
@@ -66,3 +52,13 @@ jobs:
             */build/libs/*.jar
             !**/*-dev.jar
             !common
+
+      - name: Capture Build Artifacts
+        if: ${{ matrix.java == '21' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.artifact_name }}
+          path: |
+            */build/libs/
+            !*/build/libs/*-dev.jar
+            !common/build/libs/
