@@ -1,4 +1,4 @@
-name: Build and Release Mod
+name: Publish to Releases
 
 on:
   release:
@@ -7,4 +7,25 @@ on:
 
 jobs:
   build:
+    uses: ./.github/workflows/build.yml
+    with:
+      artifact_name: published
+
+  upload:
+    needs: build
     runs-on: ubuntu-latest
+
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: published
+
+      - name: Upload Release Assets
+        run: |
+          for file in $(find ./published -type f -name "*.jar"); do
+            echo "Uploading $file"
+            gh release upload ${{ github.event.release.tag_name }} "$file" --clobber
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
