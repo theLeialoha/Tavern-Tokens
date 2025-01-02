@@ -1,0 +1,45 @@
+name: Build and Release Mod
+
+on:
+  release:
+    types:
+      - created
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Java (if applicable)
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+
+      - name: Build the mod
+        run: |
+          ./gradlew build
+
+  release-assets:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Upload Release Assets
+        run: |
+          # Define subdirectories to exclude
+          exclude_dirs=("common")
+          
+          # Iterate through all build/libs directories, excluding specified ones
+          for dir in $(find . -type d -name "build" ! -path "./${exclude_dirs[0]}/*" ! -path "./${exclude_dirs[1]}/*"); do
+            for file in $dir/libs/*.jar; do
+              if [[ "$file" != *-shadow.jar ]]; then
+                echo "Uploading $file"
+                gh release upload ${{ github.event.release.tag_name }} "$file" --clobber
+              fi
+            done
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
