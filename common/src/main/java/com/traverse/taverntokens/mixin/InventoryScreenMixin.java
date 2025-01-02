@@ -35,7 +35,7 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
 
         this.addRenderableWidget(
                 new ImageButton(this.leftPos + 27, this.height / 2 - 16, 10, 10, offsetChance, 0, 10,
-                        WALLET_GUI_LOCATION, 20, 20, (button) -> {
+                        WALLET_GUI_LOCATION, 30, 20, (button) -> {
                             PacketHandler.requestWallet();
                         }));
     }

@@ -13,7 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
 @Mixin(ServerGamePacketListenerImpl.class)
-public class ServerGamePacketMixin {
+public abstract class ServerGamePacketMixin {
 
     @Shadow
     private Connection connection;

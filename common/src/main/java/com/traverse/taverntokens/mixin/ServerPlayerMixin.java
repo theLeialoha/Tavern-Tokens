@@ -22,9 +22,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.core.NonNullList;
 
 @Mixin(ServerPlayer.class)
-public class ServerPlayerMixin extends PlayerMixin {
+public abstract class ServerPlayerMixin extends PlayerMixin {
 
-    @SuppressWarnings("static-access")
     @Inject(method = "restoreFrom", at = @At("RETURN"))
     public void onRespawn(ServerPlayer oldPlayer, boolean alive, CallbackInfo ci) {
         this.walletInventory.copy(((PlayerWithBagInventory) oldPlayer).getWalletInventory());

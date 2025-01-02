@@ -11,6 +11,7 @@
     "client": [
         "InventoryScreenMixin",
         "GuiGraphicsMixin",
+        "ClientPacketListenerMixin",
         "MinecraftMixin"
     ],
     "injectors": {

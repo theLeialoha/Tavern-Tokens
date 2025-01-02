@@ -1,5 +1,7 @@
 package com.traverse.taverntokens.mixin;
 
+import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -7,34 +9,35 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.traverse.taverntokens.networking.PacketHandler;
+import com.traverse.taverntokens.registry.ModKeybinds;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundLoginPacket;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.tutorial.Tutorial;
 
-@Mixin(ClientPacketListener.class)
+@Mixin(Minecraft.class)
 public abstract class MinecraftMixin {
 
     @Shadow
-    public Minecraft minecraft;
+    public MultiPlayerGameMode gameMode;
 
     @Shadow
-    public Connection connection;
+    public LocalPlayer player;
 
-    @Inject(method = "handleLogin", at = @At(value = "TAIL"))
-    private void handleGameProfile$injectPacketListener(ClientboundLoginPacket clientboundLoginPacket,
-            CallbackInfo ci) {
+    @Final
+    @Shadow
+    private Tutorial tutorial;
 
-        PacketHandler.injectClient(minecraft.player, connection);
+    @Shadow
+    protected abstract void setScreen(@Nullable Screen screen);
+
+    @Inject(method = "handleKeybinds", at = @At(value = "TAIL"))
+    private void handleKeybinds$injectModKeybinds(CallbackInfo ci) {
+        while (ModKeybinds.OPEN_WALLET.consumeClick()) {
+            PacketHandler.requestWallet();
+        }
     }
-
-    // @Inject(method = "clearLevel(Lnet/minecraft/client/gui/screens/Screen;)V", at
-    // = @At("HEAD"))
-    // private void clearLevel$uninjectPacketListener(Screen screen, CallbackInfo
-    // ci) {
-    // Connection connection = getConnection().getConnection();
-    // PacketHandler.uninjectClient(connection);
-    // }
 
 }

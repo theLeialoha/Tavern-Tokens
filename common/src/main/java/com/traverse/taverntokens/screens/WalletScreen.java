@@ -11,7 +11,9 @@ import com.traverse.taverntokens.wallet.WalletContainerMenu;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -23,8 +25,33 @@ public class WalletScreen extends AbstractContainerScreen<WalletContainerMenu> {
     private final ResourceLocation WALLET_GUI = new ResourceLocation(TavernTokens.MODID,
             "textures/gui/wallet_inventory.png");
 
+    private final ResourceLocation WALLET_GUI_LOCATION = new ResourceLocation(TavernTokens.MODID,
+            "textures/gui/wallet.png");
+
     public WalletScreen(WalletContainerMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
+        this.addRenderableWidget(
+                new ImageButton(this.leftPos + 10, this.height / 2 - 16, 10, 10, 20, 0, 10,
+                        WALLET_GUI_LOCATION, 30, 20, (button) -> {
+                            Minecraft minecraft = Minecraft.getInstance();
+                            if (minecraft.gameMode.isServerControlledInventory()) {
+                                minecraft.player.sendOpenInventory();
+                            } else {
+                                minecraft.setScreen(new InventoryScreen(minecraft.player));
+                            }
+                        }));
+    }
+
+    @Override
+    protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
+        // guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
+        // guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY + 9, 4210752, false);
     }
 
     @Override

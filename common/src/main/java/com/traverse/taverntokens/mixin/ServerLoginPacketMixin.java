@@ -13,7 +13,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerLoginPacketListenerImpl;
 
 @Mixin(ServerLoginPacketListenerImpl.class)
-public class ServerLoginPacketMixin {
+public abstract class ServerLoginPacketMixin {
 
     @Shadow
     private Connection connection;

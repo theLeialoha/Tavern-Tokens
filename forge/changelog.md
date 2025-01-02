@@ -12,8 +12,14 @@ Changelog
 
 ### Fixes
 
-*   [0b3e2ce](https://github.com/theLeialoha/Tavern-Tokens/commit/0b3e2ce7c1d465db60651f71d7b4fe76dd52ce5b) - Convert into Multi-project
-*   [9666d3e](https://github.com/theLeialoha/Tavern-Tokens/commit/9666d3e705e27a520858681ccf23d50a28bb3ed1) - Added Forge support
+*   Fixed UI issues
+
+### Additions
+
+*   Convert into Multi-project
+*   Added Forge support
+*   Added Mod Updater
+*   Added (Return to Inventory) Button
 
 ---
 
