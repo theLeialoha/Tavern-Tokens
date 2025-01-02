@@ -1,4 +1,6 @@
 name: Publish to Releases
+permissions:
+  contents: write
 
 on:
   release:
