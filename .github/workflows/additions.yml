@@ -3,8 +3,15 @@
 # certain platforms or Java versions, and provides a first line of defence
 # against bad commits.
 
-name: additons
-on: [pull_request, push]
+name: Check for Updates
+# on: [pull_request, push]
+on:
+    pull_request:
+    push:
+        paths-ignore: 
+            - .github/**/*
+        tags-ignore:
+            - '*'
 
 jobs:
   build:

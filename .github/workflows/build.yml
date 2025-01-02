@@ -1,6 +1,6 @@
 # Builds the repository and saves it to an artifact
 
-name: build
+name: Build Mod
 on: 
   workflow_call:
     inputs:
