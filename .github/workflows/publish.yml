@@ -30,7 +30,15 @@ jobs:
         run: chmod +x ./gradlew
       - name: Build
         run: ./gradlew build
-
+      - name: Capture Build Artifacts
+        if: ${{ matrix.java == '21' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.artifact_name }}
+          path: |
+            */build/libs/
+            !*/build/libs/*-dev.jar
+            !common/build/libs/
       - name: Update Mod Update Server
         env:
           MOD_UPDATE_API_KEY: ${{ secrets.MOD_UPDATE_KEY }}
@@ -44,21 +52,17 @@ jobs:
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_UPDATE_KEY }}
         run: ./gradlew modrinth
 
+  upload:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name:${{ env.artifact_name }}
       - name: Upload binaries to release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
             */build/libs/*.jar
-            !**/*-dev.jar
-            !common
-
-      - name: Capture Build Artifacts
-        if: ${{ matrix.java == '21' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.artifact_name }}
-          path: |
-            */build/libs/
-            !*/build/libs/*-dev.jar
-            !common/build/libs/
