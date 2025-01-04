@@ -8,6 +8,15 @@
         "Leialoha",
         "Traverse-Joe"
     ],
+    "custom": {
+        "modmenu": {
+            "links": {
+                "modmenu.discord": "https://discord.gg/ucQxdr6Kce",
+                "modmenu.curseforge": "https://curseforge.com/minecraft/mc-mods/tavern-tokens",
+                "modmenu.modrinth": "https://modrinth.com/mod/tavern-tokens"
+            }
+        }
+    },
     "contact": {
         "homepage": "https://modrinth.com/project/tavern-tokens",
         "sources": "https://github.com/theLeialoha/Tavern-Tokens",
@@ -23,6 +32,9 @@
         ],
         "client": [
             "com.traverse.taverntokens.FabricTavernTokens"
+        ],
+        "modmenu": [
+            "com.traverse.taverntokens.integration.ModMenuIntegration"
         ]
     },
     "mixins": [

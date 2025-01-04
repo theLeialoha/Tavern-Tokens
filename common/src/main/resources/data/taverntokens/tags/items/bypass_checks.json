@@ -3,7 +3,6 @@
   "values": [
     "#numismatics:authorized_cards",
     "#numismatics:cards",
-    "#numismatics:id_cards",
-    "#taverntokens:coins"
+    "#numismatics:id_cards"
   ]
 }

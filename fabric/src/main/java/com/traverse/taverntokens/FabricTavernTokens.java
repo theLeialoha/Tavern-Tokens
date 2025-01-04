@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import com.traverse.taverntokens.registry.FabricModItems;
 import com.traverse.taverntokens.registry.FabricModKeybinds;
 import com.traverse.taverntokens.registry.FabricModMenus;
+import com.traverse.taverntokens.registry.ModTags;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.ModInitializer;
@@ -17,6 +18,7 @@ public class FabricTavernTokens extends TavernTokens implements ModInitializer, 
         init();
 
         FabricModItems.register();
+        ModTags.register();
     }
 
     @Override

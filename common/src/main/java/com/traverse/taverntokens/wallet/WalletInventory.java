@@ -1,9 +1,9 @@
 package com.traverse.taverntokens.wallet;
 
 import java.util.List;
-import java.util.Optional;
 
-import com.traverse.taverntokens.registry.ModItems;
+import com.traverse.taverntokens.TavernTokens;
+import com.traverse.taverntokens.registry.ModTags;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
@@ -38,8 +38,9 @@ public class WalletInventory implements Container {
 
     @Override
     public int countItem(Item item) {
-        Optional<WalletItemStack> itemstack = stacks.stream().filter(i -> i.is(item)).findFirst();
-        return itemstack.isEmpty() ? 0 : itemstack.get().getCount();
+        return (int) Math.min((long) Integer.MAX_VALUE,
+                stacks.stream().filter(i -> i.is(item)).map(i -> i.getLongCount())
+                        .reduce((a, b) -> a + b).orElse(0L));
     }
 
     @Override
@@ -49,6 +50,51 @@ public class WalletInventory implements Container {
 
     @Override
     public void setChanged() {
+        joinSimilar();
+        removeEmpty();
+    }
+
+    public void joinSimilar() {
+        for (int i = stacks.size() - 1; i >= 0; i--) {
+            WalletItemStack current = stacks.get(i);
+            if (current.isEmpty())
+                continue;
+
+            for (int j = 0; j < i; j++) {
+                if (i <= j)
+                    continue;
+                WalletItemStack prev = stacks.get(j);
+                if (prev.isEmpty())
+                    continue;
+                if (prev.isFull())
+                    continue;
+                if (!prev.canCombine(current))
+                    continue;
+                if (prev.hasTag() != current.hasTag())
+                    continue;
+                else if (prev.hasTag() && !prev.getTag().equals(current.getTag()))
+                    continue;
+
+                long stackSize = prev.getLongCount();
+                long maxStackSize = prev.getMaxLongStackSize();
+                long amountToMax = Math.max(maxStackSize - stackSize, 0L);
+                long amountToTake = Math.min(amountToMax, current.getLongCount());
+                prev.grow(amountToTake);
+                current.shrink(amountToTake);
+            }
+        }
+    }
+
+    public void removeEmpty() {
+        List<WalletItemStack> copyStacks = List.copyOf(stacks);
+        stacks = NonNullList.withSize(6 * 4, WalletItemStack.EMPTY);
+        int i = 0;
+        for (WalletItemStack walletItemStack : copyStacks) {
+            if (!walletItemStack.isEmpty() && walletItemStack.getLongCount() > 0) {
+                stacks.set(i, walletItemStack);
+                i++;
+            }
+        }
     }
 
     @Override
@@ -57,26 +103,22 @@ public class WalletInventory implements Container {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public ItemStack removeItem(int slot, int amount) {
         slot -= 9 * 4; // Default player inventory
         WalletItemStack original = stacks.get(slot);
-        ItemStack split = original.split(amount);
+        int maxAmountToTake = Math.min(amount, original.getMaxStackSize());
+        ItemStack split = original.split(maxAmountToTake);
 
-        if (original.isEmpty() || original.getLongCount() == 0) {
-            List<WalletItemStack> copyStacks = List.copyOf(stacks);
-            stacks = NonNullList.withSize(6 * 4, WalletItemStack.EMPTY);
-            int i = 0;
-            for (WalletItemStack walletItemStack : copyStacks) {
-                if (!walletItemStack.isEmpty() && walletItemStack.getLongCount() > 0) {
-                    stacks.set(i, walletItemStack);
-                    i++;
-                }
-            }
-        }
+        // if (original.isEmpty() || original.getLongCount() == 0)
+        // removeEmpty();
+
+        setChanged();
 
         return split;
     }
 
+    @SuppressWarnings("deprecation")
     public int getStackSize(int slot) {
         slot -= 9 * 4; // Default player inventory
         WalletItemStack original = stacks.get(slot);
@@ -100,6 +142,7 @@ public class WalletInventory implements Container {
         // boolean hasItem = itemFilter.isPresent();
 
         stacks.set(slot, walletItemStack);
+        setChanged();
 
         // if (hasItem) itemFilter.get().setCount(count);
         // else stacks.add(0, WalletItemStack.fromVanillaItemStack(stack));
@@ -107,16 +150,22 @@ public class WalletInventory implements Container {
     }
 
     public boolean isValidItem(ItemStack stack) {
-        return (stack.is(ModItems.VALID_CURRENCY));
+        boolean bypassChecks = stack.getTags().anyMatch(t -> t.equals(ModTags.BYPASS_CHECKS));
+        boolean validCurrency = stack.getTags().anyMatch(t -> t.equals(ModTags.VALID_CURRENCY));
+
+        if (validCurrency) {
+            if (!TavernTokens.CONFIG.allowItemsWithNBT.get()) {
+                if (stack.hasTag()) {
+                    return TavernTokens.CONFIG.allowBypassWithNBT.get() && bypassChecks;
+                }
+            }
+            return true;
+        } else
+            return false;
     }
 
     public boolean hasRoomFor(ItemStack stack) {
-        Optional<WalletItemStack> itemFilter = stacks.stream()
-                .filter(i -> i.is(stack.getItem())).findFirst();
-
-        boolean hasRoom = itemFilter.isPresent()
-                || getContainerSize() - 1 != stacks.size();
-
+        boolean hasRoom = stacks.stream().anyMatch(i -> i.canCombine(stack) || i.isEmpty());
         return isValidItem(stack) && hasRoom;
     }
 
@@ -137,7 +186,7 @@ public class WalletInventory implements Container {
 
     @Override
     public void clearContent() {
-        stacks.clear();
+        stacks = NonNullList.withSize(6 * 4, WalletItemStack.EMPTY);
     }
 
     public void readNbtList(ListTag nbtList) {
@@ -184,25 +233,59 @@ public class WalletInventory implements Container {
     }
 
     public void addItemStack(ItemStack stack) {
-        Optional<WalletItemStack> walletItem = stacks.stream()
-                .filter(i -> WalletItemStack.canCombine(i, WalletItemStack.fromVanillaItemStack(stack))).findFirst();
-        if (walletItem.isPresent() && !walletItem.get().hasTag()) {
-            walletItem.get().grow(stack.getCount());
-            stack.shrink(stack.getCount());
-        } else if (hasRoomFor(stack) && stack.hasTag()) {
-            WalletItemStack newStack = WalletItemStack.fromVanillaItemStack(stack);
-            newStack.setCount(1L);
-            stacks.set(getContainerSize() - 1, newStack);
-            stack.shrink(1);
-        } else if (hasRoomFor(stack)) {
-            stacks.set(getContainerSize() - 1, WalletItemStack.fromVanillaItemStack(stack));
-            stack.shrink(stack.getCount());
+        WalletItemStack newStack = WalletItemStack.fromVanillaItemStack(stack);
+
+        boolean canBypass = TavernTokens.CONFIG.allowBypassWithNBT.get()
+                && stack.getTags().anyMatch(t -> t.equals(ModTags.BYPASS_CHECKS));
+
+        if (newStack.hasTag() && !canBypass) {
+            if (TavernTokens.CONFIG.allowStripItemsWithNBT.get())
+                newStack.setTag(new CompoundTag());
+            else if (!TavernTokens.CONFIG.allowItemsWithNBT.get())
+                return;
         }
+
+        for (WalletItemStack walletStack : stacks) {
+            if (newStack.isEmpty())
+                return;
+            if (walletStack.isEmpty())
+                continue;
+            if (!walletStack.canCombine(newStack))
+                continue;
+            if (walletStack.hasTag() != newStack.hasTag())
+                continue;
+            else if (walletStack.hasTag() && !walletStack.getTag().equals(newStack.getTag()))
+                continue;
+            long stackSize = walletStack.getLongCount();
+            long maxStackSize = walletStack.getMaxLongStackSize();
+            long amountToMax = Math.max(maxStackSize - stackSize, 0L);
+            if (amountToMax <= 0)
+                continue;
+            long amountToTake = Math.min(amountToMax, stack.getCount());
+            walletStack.grow(amountToTake);
+            newStack.shrink(amountToTake);
+            stack.shrink((int) amountToTake);
+        }
+
+        while (hasRoomFor(newStack) && !newStack.isEmpty()) {
+            long amountToMax = newStack.getMaxLongStackSize();
+            long amountToTake = Math.min(amountToMax, stack.getCount());
+
+            WalletItemStack stackToInsert = newStack.copy();
+            stackToInsert.setCount(amountToTake);
+            stacks.set(getContainerSize() - 1, stackToInsert);
+
+            newStack.shrink(amountToTake);
+            stack.shrink((int) amountToTake);
+        }
+
+        setChanged();
     }
 
     public void updateSlot(int slot, WalletItemStack walletItemStack) {
         slot -= 9 * 4; // Default player inventory
         stacks.set(slot, walletItemStack);
+        setChanged();
     }
 
 }

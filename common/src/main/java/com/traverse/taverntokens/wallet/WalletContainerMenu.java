@@ -15,6 +15,7 @@ public class WalletContainerMenu extends AbstractContainerMenu {
     public WalletInventory walletInventory;
     public Inventory playerInventory;
 
+    @SuppressWarnings("unused")
     private final Player player;
 
     public WalletContainerMenu(int windowId, Inventory inventory) {
@@ -111,20 +112,35 @@ public class WalletContainerMenu extends AbstractContainerMenu {
 
     public void onQuickMove(int slot, int button, Player player) {
         Slot slots = this.slots.get(slot);
+        ItemStack itemStackSlot = slots.getItem();
+
         boolean isInventory = slots.container == playerInventory;
         if (!isInventory) {
-            if (this.walletInventory.isValidItem(slots.getItem())) {
+            if (this.walletInventory.isValidItem(itemStackSlot)) {
                 for (int index = 0; index < 9 * 4; index++) {
                     Slot tempSlot = this.slots.get(index);
-                    if (tempSlot.getItem().isEmpty()) {
+                    ItemStack itemStackTempSlot = tempSlot.getItem().copy();
+
+                    if (itemStackTempSlot.isEmpty()) {
                         tempSlot.setByPlayer(this.walletInventory.removeItemNoUpdate(slot));
                         break;
+                    } else if (ItemStack.isSameItemSameTags(itemStackTempSlot, itemStackSlot)) {
+                        int amountToMax = itemStackTempSlot.getMaxStackSize() - itemStackTempSlot.getCount();
+                        int amountToTake = Math.max(0, amountToMax);
+                        int amountToMove = Math.min(amountToTake, itemStackSlot.getCount());
+
+                        if (amountToMove > 0) {
+                            int newAmount = this.walletInventory.removeItem(slot, amountToMove).getCount();
+                            itemStackTempSlot.grow(newAmount);
+                            tempSlot.setByPlayer(itemStackTempSlot);
+                            break;
+                        }
                     }
                 }
             }
         } else {
-            if (this.walletInventory.isValidItem(slots.getItem())) {
-                this.walletInventory.addItemStack(slots.getItem());
+            if (this.walletInventory.isValidItem(itemStackSlot)) {
+                this.walletInventory.addItemStack(itemStackSlot);
             } else {
                 boolean isHotbar = slot < 9;
                 int startIndex = isHotbar ? 9 : 0;
@@ -133,7 +149,7 @@ public class WalletContainerMenu extends AbstractContainerMenu {
                 for (int index = startIndex; index < endIndex; index++) {
                     Slot tempSlot = this.slots.get(index);
                     if (tempSlot.getItem().isEmpty()) {
-                        tempSlot.setByPlayer(slots.getItem());
+                        tempSlot.setByPlayer(itemStackSlot);
                         slots.setByPlayer(ItemStack.EMPTY);
                         break;
                     }

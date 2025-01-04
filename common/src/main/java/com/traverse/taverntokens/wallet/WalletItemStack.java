@@ -1,7 +1,6 @@
 package com.traverse.taverntokens.wallet;
 
 import java.util.List;
-import java.util.Objects;
 
 import com.traverse.taverntokens.TavernTokens;
 import com.traverse.taverntokens.interfaces.WalletItemStackInterface;
@@ -62,6 +61,7 @@ public class WalletItemStack extends ItemStack implements WalletItemStackInterfa
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean isEmpty() {
         return this == EMPTY || this.item == Items.AIR || this.count <= 0;
     }
@@ -106,12 +106,14 @@ public class WalletItemStack extends ItemStack implements WalletItemStackInterfa
         return nbt;
     }
 
-    public long getStackSize() {
-        return Long.MAX_VALUE;
+    public long getMaxLongStackSize() {
+        if (hasTag())
+            return TavernTokens.CONFIG.maxHeldAmountNBT.get();
+        return TavernTokens.CONFIG.maxHeldAmount.get();
     }
 
     public boolean isStackable() {
-        return getStackSize() > 1 && (!this.isDamageableItem() || !this.isDamaged());
+        return getMaxLongStackSize() > 1 && (!this.isDamageableItem() || !this.isDamaged());
     }
 
     @Override
@@ -120,7 +122,7 @@ public class WalletItemStack extends ItemStack implements WalletItemStackInterfa
             return EMPTY;
         WalletItemStack itemStack = new WalletItemStack((ItemLike) this.getItem(), this.count);
         itemStack.setPopTime(this.getPopTime());
-        if (this.getTag() != null)
+        if (this.hasTag())
             itemStack.setTag(this.getTag().copy());
         return itemStack;
     }
@@ -162,21 +164,44 @@ public class WalletItemStack extends ItemStack implements WalletItemStackInterfa
         return left.is(right.getItem());
     }
 
+    public boolean isFull() {
+        return getMaxLongStackSize() <= getLongCount();
+    }
+
     @Deprecated
     public static boolean canCombine(ItemStack stack, ItemStack otherStack) {
-        if (!stack.is(otherStack.getItem()))
-            return false;
-        if (stack.isEmpty() && otherStack.isEmpty())
-            return true;
         return WalletItemStack.canCombine((WalletItemStack) stack, (WalletItemStack) otherStack);
     }
 
     public static boolean canCombine(WalletItemStack stack, WalletItemStack otherStack) {
+        if (otherStack.isEmpty())
+            return false;
+        if (stack.isEmpty())
+            return true;
+
+        long stackSize = stack.getLongCount();
+        long maxStackSize = stack.getMaxLongStackSize();
+        long amountToMax = maxStackSize - stackSize;
+
+        if (amountToMax <= 0)
+            return false;
+
+        if (!TavernTokens.CONFIG.allowStripItemsWithNBT.get())
+            if (stack.hasTag() || otherStack.hasTag())
+                if (!stack.getTag().equals(otherStack.getTag()))
+                    return false;
+
         if (!stack.is(otherStack.getItem()))
             return false;
-        if (stack.isEmpty() && otherStack.isEmpty())
-            return true;
-        return Objects.equals(stack.getTag(), otherStack.getTag());
+        return true;
+    }
+
+    public boolean canCombine(ItemStack stack) {
+        return this.canCombine((WalletItemStack) stack);
+    }
+
+    public boolean canCombine(WalletItemStack stack) {
+        return WalletItemStack.canCombine(this, stack);
     }
 
     public boolean hasTag() {

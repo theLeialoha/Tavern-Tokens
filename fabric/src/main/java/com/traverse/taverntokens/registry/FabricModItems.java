@@ -19,6 +19,9 @@ public class FabricModItems extends ModItems {
             Registries.CREATIVE_MODE_TAB, new ResourceLocation(TavernTokens.MODID, "taverntokens_item_group"));
 
     public static void register() {
+        var MONEY_BAG_ITEM = Registry.register(BuiltInRegistries.ITEM,
+                new ResourceLocation(TavernTokens.MODID, "money_bag"),
+                MONEY_BAG.get());
         var COPPER_COIN_ITEM = Registry.register(BuiltInRegistries.ITEM,
                 new ResourceLocation(TavernTokens.MODID, "copper_coin"),
                 COPPER_COIN.get());
@@ -32,6 +35,7 @@ public class FabricModItems extends ModItems {
                 new ResourceLocation(TavernTokens.MODID, "netherite_coin"),
                 NETHERITE_COIN.get());
 
+        MONEY_BAG = () -> MONEY_BAG_ITEM;
         COPPER_COIN = () -> COPPER_COIN_ITEM;
         IRON_COIN = () -> IRON_COIN_ITEM;
         GOLD_COIN = () -> GOLD_COIN_ITEM;
@@ -40,6 +44,7 @@ public class FabricModItems extends ModItems {
         CREATIVE_TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ITEM_GROUP,
                 FabricItemGroup.builder().title(Component.translatable("itemGroup." + TavernTokens.MODID))
                         .icon(() -> new ItemStack(Items.BUNDLE)).displayItems((itemDisplayParameters, output) -> {
+                            output.accept(MONEY_BAG.get());
                             output.accept(COPPER_COIN.get());
                             output.accept(IRON_COIN.get());
                             output.accept(GOLD_COIN.get());

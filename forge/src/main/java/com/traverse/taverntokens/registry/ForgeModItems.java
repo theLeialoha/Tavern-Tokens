@@ -4,8 +4,6 @@ import com.traverse.taverntokens.ForgeTavernTokens;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -22,6 +20,8 @@ public class ForgeModItems {
             Registries.CREATIVE_MODE_TAB,
             ForgeTavernTokens.MODID);
 
+    public static final RegistryObject<Item> MONEY_BAG_REGISTRY = ITEMS.register("money_bag",
+            () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> COPPER_COIN_REGISTRY = ITEMS.register("copper_coin",
             () -> new Item(new Item.Properties()));
     public static final RegistryObject<Item> IRON_COIN_REGISTRY = ITEMS.register("iron_coin",
@@ -36,6 +36,7 @@ public class ForgeModItems {
                     .title(Component.translatable("itemGroup." + ForgeTavernTokens.MODID))
                     .icon(() -> new ItemStack(Items.BUNDLE))
                     .displayItems((itemDisplayParameters, output) -> {
+                        output.accept(MONEY_BAG_REGISTRY.get());
                         output.accept(COPPER_COIN_REGISTRY.get());
                         output.accept(IRON_COIN_REGISTRY.get());
                         output.accept(GOLD_COIN_REGISTRY.get());
@@ -43,10 +44,10 @@ public class ForgeModItems {
                     }).build());
 
     public static void register() {
+        ModItems.MONEY_BAG = () -> MONEY_BAG_REGISTRY.get();
         ModItems.COPPER_COIN = () -> COPPER_COIN_REGISTRY.get();
         ModItems.IRON_COIN = () -> IRON_COIN_REGISTRY.get();
         ModItems.GOLD_COIN = () -> GOLD_COIN_REGISTRY.get();
         ModItems.NETHERITE_COIN = () -> NETHERITE_COIN_REGISTRY.get();
-        ModItems.VALID_CURRENCY = ItemTags.create(new ResourceLocation(ForgeTavernTokens.MODID, "valid_currency"));
     }
 }

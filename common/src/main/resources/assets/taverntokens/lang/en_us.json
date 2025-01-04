@@ -7,5 +7,27 @@
     "screen.taverntokens.wallet": "Wallet",
     "key.taverntokens.wallet": "Open Wallet",
     "key.category.taverntokens": "Tavern Tokens",
-    "itemGroup.taverntokens": "Tavern Tokens"
+    "itemGroup.taverntokens": "Tavern Tokens",
+
+    "cloth_config.taverntokens.settings": "Tavern Tokens Settings",
+
+    "cloth_config.taverntokens.category.general": "General",
+    "cloth_config.taverntokens.allow_rollover": "Keep After Death",
+    "cloth_config.taverntokens.allow_loss.description": "When enabled, players will lose a percentage of their currency.",
+    "cloth_config.taverntokens.loss_percentage": "Loss in percentage",
+    "cloth_config.taverntokens.loss_percentage.description": "The percentage amount to lose upon death.",
+    "cloth_config.taverntokens.allow_drops": "Allow Death Bags",
+    "cloth_config.taverntokens.allow_drops.description": "When enabled, a bag is dropped instead of losing currency.",
+
+    "cloth_config.taverntokens.category.restrictions": "Restrictions",
+    "cloth_config.taverntokens.max_held_amount": "Max Amount",
+    "cloth_config.taverntokens.max_held_amount.description": "The max amount of items that can be held in the wallet.",
+    "cloth_config.taverntokens.max_held_amount_nbt": "Max Amount (with NBT)",
+    "cloth_config.taverntokens.max_held_amount_nbt.description": "The max amount of items (with NBT) that can be held in the wallet.",
+    "cloth_config.taverntokens.allow_items_with_nbt": "Allow Items with NBT",
+    "cloth_config.taverntokens.allow_items_with_nbt.description": "When enabled, Items with NBT can be inserted into the wallet.",
+    "cloth_config.taverntokens.allow_strip_with_nbt": "Strip NBT from Items",
+    "cloth_config.taverntokens.allow_strip_with_nbt.description": "When enabled, Items with NBT will have their NBT stripped before placed into the wallet.",
+    "cloth_config.taverntokens.allow_bypass_with_nbt": "Allow NBT Bypass",
+    "cloth_config.taverntokens.allow_bypass_with_nbt.description": "When enabled, Items in the '#bypass_checks' tag will bypass NBT checks."
 }

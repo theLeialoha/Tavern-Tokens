@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "#numismatics:coins",
+    "taverntokens:copper_coin",
+    "taverntokens:iron_coin",
+    "taverntokens:gold_coin",
+    "taverntokens:netherite_coin"
+  ]
+}

@@ -22,7 +22,7 @@ public interface WalletItemStackInterface {
         return null;
     }
 
-    default long getStackSize() {
+    default long getMaxLongStackSize() {
         return 0;
     }
 

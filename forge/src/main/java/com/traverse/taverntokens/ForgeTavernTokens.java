@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import com.traverse.taverntokens.registry.ForgeModItems;
 import com.traverse.taverntokens.registry.ForgeModKeybinds;
 import com.traverse.taverntokens.registry.ForgeModMenus;
+import com.traverse.taverntokens.registry.ModTags;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -27,6 +28,7 @@ public class ForgeTavernTokens extends TavernTokens {
     public ForgeTavernTokens(FMLJavaModLoadingContext context) {
         this.eventBus = context.getModEventBus();
 
+        ModTags.register();
         ForgeModItems.ITEMS.register(eventBus);
         ForgeModItems.TAB.register(eventBus);
         ForgeModItems.register();

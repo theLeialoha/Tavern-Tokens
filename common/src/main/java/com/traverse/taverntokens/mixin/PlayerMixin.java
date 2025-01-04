@@ -36,9 +36,14 @@ public abstract class PlayerMixin implements PlayerWithBagInventory {
         }
     }
 
-    // // Drop Method for Coins on Death
+    // Drop Method for Coins on Death
     @Inject(at = @At("RETURN"), method = "dropEquipment")
     public void dropEquipment(CallbackInfo ci) {
         TavernTokens.LOGGER.info("Coins lost send HALP");
+        // TODO: Find out where, death is causing the items in the player's inventory
+        // TODO: to vanish after death when opening gui
+
+        // if (!TavernTokens.CONFIG.allowRollover.get())
+        // this.getWalletInventory().clearContent();
     }
 }
