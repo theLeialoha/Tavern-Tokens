@@ -10,9 +10,9 @@ Changelog
 
 ### Integration
 
-*   Now intergrates with Create: Numismatics
-*   Now intergrates with Cloth Config
-*   Now intergrates with Mod Menu (fabric)
+*   Now integrates with Create: Numismatics
+*   Now integrates with Cloth Config
+*   Now integrates with Mod Menu (fabric)
 
 ### Fixes
 
@@ -22,7 +22,7 @@ Changelog
 *   Wallet can now be opened with the keybind
 *   Wallet UI texts will no longer display
 *   Server and Client desync (after death) is now fixed
-*   Stack spliting (within the wallet) now works as intended
+*   Stack splitting (within the wallet) now works as intended
 
 ### Additions
 
