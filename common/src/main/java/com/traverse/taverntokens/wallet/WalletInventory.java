@@ -1,5 +1,6 @@
 package com.traverse.taverntokens.wallet;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.traverse.taverntokens.TavernTokens;
@@ -11,8 +12,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.NonNullList;
 
 public class WalletInventory implements Container {
@@ -113,8 +112,6 @@ public class WalletInventory implements Container {
         // if (original.isEmpty() || original.getLongCount() == 0)
         // removeEmpty();
 
-        setChanged();
-
         return split;
     }
 
@@ -142,7 +139,6 @@ public class WalletInventory implements Container {
         // boolean hasItem = itemFilter.isPresent();
 
         stacks.set(slot, walletItemStack);
-        setChanged();
 
         // if (hasItem) itemFilter.get().setCount(count);
         // else stacks.add(0, WalletItemStack.fromVanillaItemStack(stack));
@@ -194,11 +190,7 @@ public class WalletInventory implements Container {
 
         for (int i = 0; i < nbtList.size(); ++i) {
             CompoundTag tag = nbtList.getCompound(i);
-            ResourceLocation resourceLocation = ResourceLocation.tryParse(tag.getString("id"));
-            if (resourceLocation == null)
-                continue;
-
-            stacks.set(i, WalletItemStack.fromTag(tag));
+            stacks.set(i, WalletItemStack.of(tag));
         }
     }
 
@@ -208,10 +200,6 @@ public class WalletInventory implements Container {
         for (WalletItemStack item : stacks) {
             if (item.isEmpty())
                 continue;
-            ResourceLocation resourceLocation = BuiltInRegistries.ITEM.getKey(item.getItem());
-            if (resourceLocation == null)
-                continue;
-
             CompoundTag tag = new CompoundTag();
             item.save(tag);
             listTag.add(tag);
@@ -232,8 +220,15 @@ public class WalletInventory implements Container {
         stacks = walletInventory.stacks;
     }
 
+    @SuppressWarnings("deprecation")
     public void addItemStack(ItemStack stack) {
-        WalletItemStack newStack = WalletItemStack.fromVanillaItemStack(stack);
+        WalletItemStack walletStack = WalletItemStack.fromVanillaItemStack(stack);
+        addWalletStack(walletStack);
+        stack.setCount(walletStack.getCount());
+    }
+
+    public void addWalletStack(WalletItemStack stack) {
+        WalletItemStack newStack = stack.copy();
 
         boolean canBypass = TavernTokens.CONFIG.allowBypassWithNBT.get()
                 && stack.getTags().anyMatch(t -> t.equals(ModTags.BYPASS_CHECKS));
@@ -261,31 +256,45 @@ public class WalletInventory implements Container {
             long amountToMax = Math.max(maxStackSize - stackSize, 0L);
             if (amountToMax <= 0)
                 continue;
-            long amountToTake = Math.min(amountToMax, stack.getCount());
+            long amountToTake = Math.min(amountToMax, stack.getLongCount());
             walletStack.grow(amountToTake);
             newStack.shrink(amountToTake);
-            stack.shrink((int) amountToTake);
+            stack.shrink(amountToTake);
         }
 
         while (hasRoomFor(newStack) && !newStack.isEmpty()) {
             long amountToMax = newStack.getMaxLongStackSize();
-            long amountToTake = Math.min(amountToMax, stack.getCount());
+            long amountToTake = Math.min(amountToMax, stack.getLongCount());
 
             WalletItemStack stackToInsert = newStack.copy();
             stackToInsert.setCount(amountToTake);
             stacks.set(getContainerSize() - 1, stackToInsert);
 
             newStack.shrink(amountToTake);
-            stack.shrink((int) amountToTake);
+            stack.shrink(amountToTake);
         }
-
-        setChanged();
     }
 
     public void updateSlot(int slot, WalletItemStack walletItemStack) {
         slot -= 9 * 4; // Default player inventory
         stacks.set(slot, walletItemStack);
-        setChanged();
+    }
+
+    public WalletItemStack[] takePercent(float percentage) {
+        List<WalletItemStack> output = new ArrayList<>();
+
+        for (int i = 0; i < stacks.size(); i++) {
+            WalletItemStack stack = stacks.get(i);
+            if (stack.isEmpty())
+                continue;
+            if (stack.getTags().anyMatch(t -> t.equals(ModTags.WALLET_KEEP)))
+                continue;
+
+            WalletItemStack split = stack.split((long) Math.ceil(stack.getLongCount() * percentage));
+            output.add(split);
+        }
+
+        return output.toArray(WalletItemStack[]::new);
     }
 
 }

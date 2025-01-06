@@ -66,8 +66,7 @@ public class WalletContainerMenu extends AbstractContainerMenu {
                 case THROW -> onThrow(slot, button, player);
             }
 
-            // boolean isWallet = this.slots.get(slot).inventory == walletInventory;
-            // if (isWallet) updateToClient();
+            this.walletInventory.setChanged();
         } catch (IndexOutOfBoundsException e) {
         }
     }
@@ -90,7 +89,10 @@ public class WalletContainerMenu extends AbstractContainerMenu {
             if (walletInventory.isValidItem(stack) || stack.isEmpty()) {
                 if (stack.isEmpty()) {
                     int divider = button + 1;
-                    stack = walletInventory.removeItem(slot, 64 / divider);
+                    int stackSize = walletInventory.getStackSize(slot);
+                    int amount = Math.min(stackSize, 64);
+
+                    stack = walletInventory.removeItem(slot, amount / divider);
                     setCarried(stack);
                 } else if (slots.mayPlace(stack)) {
                     if (walletInventory.isValidItem(stack)) {

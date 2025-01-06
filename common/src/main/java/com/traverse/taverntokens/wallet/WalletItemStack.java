@@ -48,9 +48,7 @@ public class WalletItemStack extends ItemStack implements WalletItemStackInterfa
     }
 
     private WalletItemStack(CompoundTag nbt) {
-        this(
-                BuiltInRegistries.ITEM.get(new ResourceLocation(nbt.getString("id"))),
-                nbt.getLong("Count"));
+        this(BuiltInRegistries.ITEM.get(new ResourceLocation(nbt.getString("id"))), nbt.getLong("Count"));
         if (nbt.contains("tag", (int) Tag.TAG_COMPOUND)) {
             super.setTag(nbt.getCompound("tag"));
             this.getItem().verifyTagAfterLoad(this.getTag());
@@ -144,7 +142,7 @@ public class WalletItemStack extends ItemStack implements WalletItemStackInterfa
 
     @Deprecated
     public static boolean areEqual(ItemStack left, ItemStack right) {
-        return areEqual((WalletItemStack) left, (WalletItemStack) right);
+        return areEqual(WalletItemStack.fromVanillaItemStack(left), WalletItemStack.fromVanillaItemStack(right));
     }
 
     public static boolean areEqual(WalletItemStack left, WalletItemStack right) {
@@ -170,7 +168,8 @@ public class WalletItemStack extends ItemStack implements WalletItemStackInterfa
 
     @Deprecated
     public static boolean canCombine(ItemStack stack, ItemStack otherStack) {
-        return WalletItemStack.canCombine((WalletItemStack) stack, (WalletItemStack) otherStack);
+        return WalletItemStack.canCombine(WalletItemStack.fromVanillaItemStack(stack),
+                WalletItemStack.fromVanillaItemStack(otherStack));
     }
 
     public static boolean canCombine(WalletItemStack stack, WalletItemStack otherStack) {
@@ -197,7 +196,7 @@ public class WalletItemStack extends ItemStack implements WalletItemStackInterfa
     }
 
     public boolean canCombine(ItemStack stack) {
-        return this.canCombine((WalletItemStack) stack);
+        return this.canCombine(WalletItemStack.fromVanillaItemStack(stack));
     }
 
     public boolean canCombine(WalletItemStack stack) {
@@ -214,6 +213,15 @@ public class WalletItemStack extends ItemStack implements WalletItemStackInterfa
 
     public void setTag(CompoundTag nbt) {
         super.setTag(nbt);
+    }
+
+    public static WalletItemStack of(CompoundTag compoundTag) {
+        try {
+            return new WalletItemStack(compoundTag);
+        } catch (RuntimeException var2) {
+            // LOGGER.debug("Tried to load invalid item: {}", compoundTag, var2);
+            return EMPTY;
+        }
     }
 
     @Deprecated

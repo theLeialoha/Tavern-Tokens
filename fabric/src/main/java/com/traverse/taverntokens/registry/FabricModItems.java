@@ -11,7 +11,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 public class FabricModItems extends ModItems {
 
@@ -43,7 +42,7 @@ public class FabricModItems extends ModItems {
 
         CREATIVE_TAB = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, ITEM_GROUP,
                 FabricItemGroup.builder().title(Component.translatable("itemGroup." + TavernTokens.MODID))
-                        .icon(() -> new ItemStack(Items.BUNDLE)).displayItems((itemDisplayParameters, output) -> {
+                        .icon(() -> new ItemStack(MONEY_BAG.get())).displayItems((itemDisplayParameters, output) -> {
                             output.accept(MONEY_BAG.get());
                             output.accept(COPPER_COIN.get());
                             output.accept(IRON_COIN.get());

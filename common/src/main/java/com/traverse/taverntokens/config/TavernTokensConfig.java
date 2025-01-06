@@ -17,18 +17,15 @@ public class TavernTokensConfig {
 
     public TavernTokensConfig(ConfigBuilder builder) {
 
-        // TODO: Implement
         allowRollover = builder.booleanEntry("allow_rollover", true)
                 .comment("Enables/Disables currency rollover on respawn",
                         "When enabled, all the contents (after loss) is kept upon respawn",
                         "When disabled, all the contents (after loss) will disappear completely");
 
-        // TODO: Implement
         lossPercentage = builder.floatEntry("loss_percentage", 15f, 0f, 100f)
                 .comment("Percentage of loss upon death",
                         "The percent of coins to lose upon death");
 
-        // TODO: Implement
         allowDrops = builder.booleanEntry("allow_drops", true)
                 .comment("Enables/Disables currency drops upon death",
                         "When enabled, a bag is dropped instead of losing currency",

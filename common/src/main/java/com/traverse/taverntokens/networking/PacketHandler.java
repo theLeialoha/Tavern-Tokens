@@ -61,17 +61,20 @@ public abstract class PacketHandler {
         serverPlayer.connection.send(packet);
     }
 
-    public static final void injectServer(ServerPlayer player, Connection connection) {
+    public static final void injectServer(ServerPlayer serverPlayer, Connection connection) {
         ChannelPipeline pipeline = connection.channel.pipeline();
 
         pipeline.addBefore("packet_handler", TavernTokens.MODID, new SimpleChannelInboundHandler<Packet<?>>() {
             protected void channelRead0(ChannelHandlerContext ctx, Packet<?> packet) throws Exception {
+                ServerPlayer player = serverPlayer.getServer().getPlayerList().getPlayer(serverPlayer.getUUID());
+
                 if (packet instanceof ServerboundCustomPayloadPacket customPayloadPacket) {
                     if (customPayloadPacket.getIdentifier().equals(PacketConstants.OPEN_WALLET_ID)) {
                         player.openMenu(new WalletScreenMenuProvider());
+                        return;
                     }
-                } else
-                    ctx.fireChannelRead(packet);
+                }
+                ctx.fireChannelRead(packet);
             };
         });
     }
@@ -96,9 +99,11 @@ public abstract class PacketHandler {
                                 int slot = buf.readInt();
                                 WalletItemStack itemStack = WalletItemStack.fromTag(buf.readNbt());
                                 walletInventory.updateSlot(slot, itemStack);
+
+                                return;
                             }
-                        } else
-                            ctx.fireChannelRead(packet);
+                        }
+                        ctx.fireChannelRead(packet);
                     };
                 });
     }

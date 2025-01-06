@@ -12,7 +12,8 @@
         "InventoryScreenMixin",
         "GuiGraphicsMixin",
         "ClientPacketListenerMixin",
-        "MinecraftMixin"
+        "MinecraftMixin",
+        "ItemPropertiesMixin"
     ],
     "injectors": {
         "defaultRequire": 1

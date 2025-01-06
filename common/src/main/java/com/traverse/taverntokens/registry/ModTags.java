@@ -12,6 +12,8 @@ public class ModTags {
             new ResourceLocation(TavernTokens.MODID, "valid_currency"));
     public static TagKey<Item> BYPASS_CHECKS = TagKey.create(Registries.ITEM,
             new ResourceLocation(TavernTokens.MODID, "bypass_checks"));
+    public static TagKey<Item> WALLET_KEEP = TagKey.create(Registries.ITEM,
+            new ResourceLocation(TavernTokens.MODID, "wallet_keep"));
 
     public static void register() {
     }

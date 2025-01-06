@@ -1,0 +1,9 @@
+{
+    "parent": "minecraft:item/generated",
+    "textures": {
+        "layer0": "taverntokens:item/money_bag"
+    },
+    "overrides": [
+        { "predicate": { "taverntokens:filled": 1 }, "model": "taverntokens:item/money_bag_filled" }
+    ]
+}

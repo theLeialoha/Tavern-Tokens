@@ -21,6 +21,8 @@ Changelog
 *   Coins will reduce to one stack if possible
 *   Wallet can now be opened with the keybind
 *   Wallet UI texts will no longer display
+*   Server and Client desync (after death) is now fixed
+*   Stack spliting (within the wallet) now works as intended
 
 ### Additions
 
@@ -30,6 +32,7 @@ Changelog
 *   Added 2 more items tags, #taverntoken:bypass_checks & #taverntoken:coins (internal use)
 *   #taverntokens:valid_currency now includes Create: Numismatics cards and coins
 *   Wallet now has a back to inventory button
+*   Money bags now drop on death
 
 ---
 

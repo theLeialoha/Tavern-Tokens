@@ -41,7 +41,7 @@ dependencies {
     
     modImplementation "com.terraformersmc:modmenu:${modmenu_version}"
 
-    modLocalRuntime("dev.emi:emi-fabric:${emi_version}")
-    modLocalRuntime("com.simibubi.create:create-fabric-${minecraft_version}:${create_version}")
-    modLocalRuntime("dev.ithundxr.createnumismatics:CreateNumismatics-fabric-${minecraft_version}:${create_numismatics_version}")
+    // modLocalRuntime("dev.emi:emi-fabric:${emi_version}")
+    // modLocalRuntime("com.simibubi.create:create-fabric-${minecraft_version}:${create_version}")
+    // modLocalRuntime("dev.ithundxr.createnumismatics:CreateNumismatics-fabric-${minecraft_version}:${create_numismatics_version}")
 }

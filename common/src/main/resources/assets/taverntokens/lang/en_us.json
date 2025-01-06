@@ -1,8 +1,11 @@
 {
+    "item.taverntokens.money_bag": "Money Bag",
+    "item.taverntokens.money_bag.consume": "Right Click to add to Wallet",
     "item.taverntokens.copper_coin": "Copper Coin",
     "item.taverntokens.iron_coin": "Iron Coin",
     "item.taverntokens.gold_coin": "Gold Coin",
     "item.taverntokens.netherite_coin": "Netherite Coin",
+
     "tooltip.taverntokens.count": "Total: %s",
     "screen.taverntokens.wallet": "Wallet",
     "key.taverntokens.wallet": "Open Wallet",
@@ -13,7 +16,7 @@
 
     "cloth_config.taverntokens.category.general": "General",
     "cloth_config.taverntokens.allow_rollover": "Keep After Death",
-    "cloth_config.taverntokens.allow_loss.description": "When enabled, players will lose a percentage of their currency.",
+    "cloth_config.taverntokens.allow_rollover.description": "When enabled, players will keep their currency on respawn (after loss is calculated).",
     "cloth_config.taverntokens.loss_percentage": "Loss in percentage",
     "cloth_config.taverntokens.loss_percentage.description": "The percentage amount to lose upon death.",
     "cloth_config.taverntokens.allow_drops": "Allow Death Bags",
