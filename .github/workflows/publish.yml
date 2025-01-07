@@ -64,5 +64,6 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
+          body_path: ${{ github.workspace }}/changelog.md
           files: |
             */build/libs/*.jar
