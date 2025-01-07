@@ -1,9 +1,9 @@
 {
-  "replace": false,
-  "values": [
-    "#numismatics:authorized_cards",
-    "#numismatics:cards",
-    "#numismatics:id_cards",
-    "#taverntokens:coins"
-  ]
+    "replace": false,
+    "values": [
+        "#numismatics:authorized_cards",
+        "#numismatics:cards",
+        "#numismatics:id_cards",
+        "#taverntokens:coins"
+    ]
 }

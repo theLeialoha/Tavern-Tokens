@@ -33,6 +33,7 @@ Changelog
 *   #taverntokens:valid_currency now includes Create: Numismatics cards and coins
 *   Wallet now has a back to inventory button
 *   Money bags now drop on death
+*   Added item tag references for Create: Numismatics
 
 ---
 
