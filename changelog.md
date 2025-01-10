@@ -39,8 +39,8 @@ Changelog
 
 ### Special thanks to the following people:
 
-[@Traverse-Joe](https://github.com/Traverse-Joe) (Lead)
-[@Leialoha](https://github.com/Leialoha) (Developer)
+@Traverse-Joe (Lead)
+@Leialoha (Developer)
 
 _and thank you for using our mod!_
 
