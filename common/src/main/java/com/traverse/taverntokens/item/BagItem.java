@@ -136,6 +136,8 @@ public class BagItem extends Item {
             CompoundTag tag = nbtList.getCompound(i);
             if (!tag.getString("id").equalsIgnoreCase(itemId))
                 continue;
+            WalletItemStack currentItem = WalletItemStack.fromTag(tag);
+            if (!currentItem.canCombine(itemToInsert)) continue;
             long count = tag.getLong("Count");
             long amountToMax = Math.max(0, Long.MAX_VALUE - count);
             long amountToMove = Math.min(amountToMax, itemToInsert.getLongCount());
@@ -143,10 +145,12 @@ public class BagItem extends Item {
             itemToInsert.shrink(amountToMove);
         }
 
-        if (nbtList.size() < MAX_INSERT_AMOUNT) {
-            CompoundTag tag = new CompoundTag();
-            itemToInsert.save(tag);
-            nbtList.add(tag);
+        if (!itemToInsert.isEmpty() && itemToInsert.getLongCount() > 0) {
+            if (nbtList.size() < MAX_INSERT_AMOUNT) {
+                CompoundTag tag = new CompoundTag();
+                itemToInsert.save(tag);
+                nbtList.add(tag);
+            }
         }
 
         return itemToInsert.isEmpty() || prevStackSize < itemToInsert.getLongCount();

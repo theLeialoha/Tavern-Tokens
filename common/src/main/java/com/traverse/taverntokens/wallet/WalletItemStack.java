@@ -186,9 +186,11 @@ public class WalletItemStack extends ItemStack implements WalletItemStackInterfa
             return false;
 
         if (!TavernTokens.CONFIG.allowStripItemsWithNBT.get())
-            if (stack.hasTag() || otherStack.hasTag())
+            if (stack.hasTag() && otherStack.hasTag())
                 if (!stack.getTag().equals(otherStack.getTag()))
                     return false;
+            else if (stack.hasTag() || otherStack.hasTag())
+                return false;
 
         if (!stack.is(otherStack.getItem()))
             return false;
