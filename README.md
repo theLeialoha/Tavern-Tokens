@@ -11,9 +11,9 @@ One of the best things about this mod is that it empowers modders and developers
 ### Quick note for our mod and modpack developers.
 If you wish to create your own currency, make sure to add the tag `taverntokens:valid_currency` to any items you like to be placed in the wallet. Also note that any currency that is placed in the wallet will be stripped of all other NBT tags. This means if you want to create an item with a custom lore or display **YOU MUST** mod that within your item.
 
-## Requirements
+<!-- ## Requirements
 
-Tavern Tokens requires the **Fabric API** to work. As for right now, this mod is only made for fabric. This means that **Forge** will _not_ work.
+Tavern Tokens requires the **Fabric API** to work. As for right now, this mod is only made for fabric. This means that **Forge** will _not_ work. -->
 
 ## Download
 You can find the downloads for each version with their release notes in the [releases page](https://github.com/theLeialoha/Tavern-Tokens/releases). Or alternatively, you can also download it from [Modrinth](https://modrinth.com/project/tavern-tokens) or [CurseForge](https://curseforge.com/minecraft/mc-mods/tavern-tokens).
