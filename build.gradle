@@ -4,4 +4,7 @@ plugins {
     id 'com.modrinth.minotaur' version "${minotaur_version}" apply false
     id 'mod-update' version "${mod_update_version}" apply false
     id 'fabric-loom' version "${fabric_loom_version}" apply false
+
+    // DEV TESTING
+    // id 'org.barfuin.gradle.taskinfo' version '2.1.0'
 }

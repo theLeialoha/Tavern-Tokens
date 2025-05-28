@@ -23,7 +23,7 @@ public class WalletContainerMenu extends AbstractContainerMenu {
     }
 
     public WalletContainerMenu(int windowId, Inventory inventory, Player player) {
-        super(ModMenus.WALLET_SCREEN_HANDLER, windowId);
+        super(ModMenus.WALLET_SCREEN_HANDLER.get(), windowId);
         this.player = player;
 
         this.walletInventory = ((PlayerWithBagInventory) player).getWalletInventory();
