@@ -72,13 +72,7 @@ public class ForgeTavernTokens extends TavernTokens {
 
         register(event, () -> ModItems.bootStrap());
         register(event, () -> ModCreativeTabs.bootStrap());
-        registerMenus(event, () -> ModMenus.bootStrap());
-    }
-
-    private static void registerMenus(RegisterEvent event, Supplier<ModRegistrationProvider<MenuType<?>>> bootStrap) {
-        register(event, bootStrap);
-
-        MenuScreens.<WalletContainerMenu, WalletScreen>register(ModMenus.WALLET_SCREEN_HANDLER.get(), (gui, inventory, title) -> new WalletScreen(gui, inventory, title));
+        register(event, () -> ModMenus.bootStrap());
     }
 
     private static <T> void register(RegisterEvent event, Supplier<ModRegistrationProvider<T>> object) {
