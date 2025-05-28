@@ -71,8 +71,8 @@ public class ForgeTavernTokens extends TavernTokens {
         // ForgeExampleMod.LOGGER.info("HELLO FROM MOD REGISTRATION");
 
         register(event, () -> ModItems.bootStrap());
-        register(event, () -> ModCreativeTabs.bootStrap());
         register(event, () -> ModMenus.bootStrap());
+        register(event, () -> ModCreativeTabs.bootStrap());
     }
 
     private static <T> void register(RegisterEvent event, Supplier<ModRegistrationProvider<T>> object) {

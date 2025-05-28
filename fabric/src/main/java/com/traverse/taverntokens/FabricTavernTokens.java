@@ -6,7 +6,6 @@ import com.traverse.taverntokens.registry.FabricModKeybinds;
 import com.traverse.taverntokens.registry.ModCreativeTabs;
 import com.traverse.taverntokens.registry.ModItems;
 import com.traverse.taverntokens.registry.ModMenus;
-import com.traverse.taverntokens.registry.ModTags;
 import com.traverse.taverntokens.utils.registry.ModRegistrationProvider;
 import com.traverse.taverntokens.utils.registry.ModRegistryEntry;
 
@@ -22,15 +21,14 @@ public class FabricTavernTokens extends TavernTokens implements ModInitializer, 
         init();
 
         register(ModItems.bootStrap());
+        register(ModMenus.bootStrap());
         register(ModCreativeTabs.bootStrap());
-        ModTags.register();
     }
 
     @Override
     public void onInitializeClient() {
         initClient();
 
-        register(ModMenus.bootStrap());
         FabricModKeybinds.register();
     }
 

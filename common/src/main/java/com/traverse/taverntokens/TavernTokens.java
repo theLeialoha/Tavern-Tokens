@@ -6,8 +6,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.traverse.taverntokens.config.TavernTokensConfig;
+import com.traverse.taverntokens.registry.ModMenus;
+import com.traverse.taverntokens.registry.ModTags;
+import com.traverse.taverntokens.screens.WalletScreen;
+import com.traverse.taverntokens.wallet.WalletContainerMenu;
 
 import de.maxhenkel.configbuilder.ConfigBuilder;
+import net.minecraft.client.gui.screens.MenuScreens;
 
 public abstract class TavernTokens {
 
@@ -17,12 +22,15 @@ public abstract class TavernTokens {
 
     public void init() {
         initConfig();
+        ModTags.register();
 
         TavernTokens.LOGGER.info("Insert Coins to Continue");
     }
 
     public void initClient() {
         initConfig();
+
+        MenuScreens.<WalletContainerMenu, WalletScreen>register(ModMenus.WALLET_SCREEN_HANDLER.get(), (gui, inventory, title) -> new WalletScreen(gui, inventory, title));
     }
 
     private void initConfig() {
