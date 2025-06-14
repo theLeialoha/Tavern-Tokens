@@ -1,0 +1,61 @@
+name: Update Assets Workflow
+
+on:
+  push:
+    branches:
+      - assets
+  pull_request:
+    branches:
+      - assets
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Validate jsons
+        run: npm run validate:json
+
+      - name: Validate schemas
+        run: npm run validate:schema
+
+      - name: Compare generated hashes
+        run: |
+          # Get hash file content from current commit
+          PREV_HASH=$(cat assets.json>/dev/null || echo "")
+
+          if [ -z "$PREV_HASH" ]; then
+            echo "No previous hash file found, skipping comparison."
+            exit 0
+          fi
+
+          npm run generate:hash
+
+          # Read current hash file
+          CUR_HASH=$(cat assets.json)
+
+          if [ "$CUR_HASH" = "$PREV_HASH" ]; then
+            echo "Hash matches the previous commit."
+          else
+            echo "Hash does NOT match the previous commit!"
+            exit 1
+          fi
+
+      - name: Send repo URL with branch
+        run: |
+            curl -X POST https://assets.leialoha.dev/update \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${{ secrets.ASSETS_UPDATE_TOKEN }}" \
+            -d "{\"url\": \"https://raw.githubusercontent.com/${{ github.repository }}/refs/heads/${{ github.ref_name }}/\"}"
+

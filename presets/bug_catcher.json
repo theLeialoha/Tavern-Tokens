@@ -1,0 +1,8 @@
+{
+    "tag": "bug_catcher",
+    "options": {
+        "base": "taverntokens:textures/entity/money_bag/overgrown.png",
+        "knots": "taverntokens:textures/entity/draw_strings/overgrown/"
+    },
+    "priority": 1
+}

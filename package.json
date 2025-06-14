@@ -1,0 +1,17 @@
+{
+  "devDependencies": {
+    "ajv": "^8.17.1",
+    "better-ajv-errors": "^2.0.2",
+    "glob": "^11.0.3",
+    "gulp": "^5.0.1",
+    "gulp-jsonlint": "^1.3.2",
+    "husky": "^8.0.0",
+    "ignore": "^7.0.5"
+  },
+  "scripts": {
+    "validate:json": "gulp --gulpfile .gulp/gulpfile.js validate:json",
+    "validate:schema": "gulp --gulpfile .gulp/gulpfile.js validate:schema",
+    "generate:hash": "node .gulp/hash.js",
+    "prepare": "husky install"
+  }
+}

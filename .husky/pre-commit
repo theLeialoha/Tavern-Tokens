@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+npm run validate:json
+npm run validate:schema
+
+npm run generate:hash
+git add assets.json

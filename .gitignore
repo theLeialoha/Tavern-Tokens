@@ -1,0 +1,7 @@
+# Ignore node files
+node_modules/
+package-lock.json
+
+# Hopefully none of these files...
+dist/
+*.log

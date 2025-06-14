@@ -1,0 +1,11 @@
+.git/
+.github/
+.gulp/
+.husky/
+
+.gitignore
+.hashignore
+
+node_modules/
+package-lock.json
+package.json

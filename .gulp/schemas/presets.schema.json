@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "properties": {
+    "tag": { "type": "string" },
+    "options": {
+      "type": "object",
+      "properties": {
+        "base": { "type": "string" },
+        "knots": { "type": "string" },
+        "supporter": { "type": "boolean" }
+      },
+      "anyOf": [
+        { "required": [ "base" ] },
+        { "required": [ "knots" ] },
+        { "required": [ "supporter" ] }
+      ]
+    },
+    "priority": { "type": "integer" }
+  },
+  "required": [ "tag", "options" ],
+  "additionalProperties": false
+}

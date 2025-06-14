@@ -1,0 +1,7 @@
+{
+    "tag": "default",
+    "options": {
+        "base": "taverntokens:textures/entity/money_bag/default.png",
+        "knots": "taverntokens:textures/entity/draw_strings/default/"
+    }
+}
