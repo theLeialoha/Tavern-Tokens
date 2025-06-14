@@ -5,3 +5,6 @@ package-lock.json
 # Hopefully none of these files...
 dist/
 *.log
+
+# I hate MacOS files
+.DS_Store
