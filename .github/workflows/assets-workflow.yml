@@ -57,5 +57,5 @@ jobs:
             curl -X POST https://assets.leialoha.dev/mods/taverntokens/edit \
             -H "Content-Type: application/json" \
             -H "apikey: ${{ secrets.MOD_UPDATE_KEY }}" \
-            -d "{\"assetsURL\": \"https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/${{ github.ref_name }}/assets.json\"}"
+            -d "{\"assetsURL\": \"https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/assets.json\"}"
 
