@@ -54,8 +54,8 @@ jobs:
 
       - name: Send repo URL with branch
         run: |
-            curl -X POST https://assets.leialoha.dev/update \
+            curl -X POST https://assets.leialoha.dev/mods/taverntokens/edit \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer ${{ secrets.ASSETS_UPDATE_TOKEN }}" \
-            -d "{\"url\": \"https://raw.githubusercontent.com/${{ github.repository }}/refs/heads/${{ github.ref_name }}/\"}"
+            -H "apikey: ${{ secrets.MOD_UPDATE_KEY }}" \
+            -d "{\"assetsURL\": \"https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/${{ github.ref_name }}/assets.json\"}"
 
